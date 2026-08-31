@@ -1,0 +1,8 @@
+{
+  "name": "Gestor Documental EVECA",
+  "description": "Sistema centralizado de gestión documental para el área de Sostenibilidad de EVECA, con trazabilidad, control de versiones y alertas de revisión.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

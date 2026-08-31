@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-eveca-primary: #1B4332; /* Dark green from logo */
+  --color-eveca-accent: #D4A373; /* Earthy tone from logo */
+  --color-eveca-oil: #FFB703; /* Oil drop yellow */
+  --color-eveca-red: #C1121F; /* Red line detail */
+  --color-eveca-green-light: #2D6A4F;
+  --color-eveca-bg: #F8F9FA;
+}
+
+@layer base {
+  body {
+    @apply bg-eveca-bg text-gray-900 antialiased;
+  }
+}
