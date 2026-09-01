@@ -365,11 +365,11 @@ export const AdminModule = ({
                     onClick={async () => {
                       if (window.confirm('¿Está seguro de que desea vaciar el historial de consecutivos? Esto reiniciará todos los contadores a cero.')) {
                         try {
-                          // Usamos un filtro más estándar para asegurar que Supabase acepte la eliminación masiva
+                          // Usamos un filtro sobre el ID que siempre existe para evitar errores de columnas nombradas distinto
                           const { error } = await supabase
                             .from('consecutivos')
                             .delete()
-                            .gte('ultimo_numero', 0);
+                            .neq('id', '00000000-0000-0000-0000-000000000000');
                           
                           if (error) throw error;
                           
