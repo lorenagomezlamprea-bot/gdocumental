@@ -113,7 +113,12 @@ async function processExcel(buffer: ArrayBuffer, fileName: string, watermark: st
 
   workbook.eachSheet((worksheet) => {
     // Header & Footer
-    worksheet.headerFooter.oddFooter = `&L&8${footer1}\n&L&7${footer2}`;
+    if (worksheet.headerFooter) {
+      worksheet.headerFooter.oddFooter = `&L&8${footer1}\n&L&7${footer2}`;
+    } else {
+      // In case headerFooter object doesn't exist, we skip or handle differently if needed
+      console.warn('Worksheet headerFooter is not defined, skipping footer.');
+    }
     
     // Watermark approach: Prominent cell or Background (Background is harder with ExcelJS, using prominent cell)
     // Adding a note in the first available top rows
