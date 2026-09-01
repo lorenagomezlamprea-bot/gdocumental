@@ -11,7 +11,9 @@ import { DocumentList } from './components/DocumentList';
 import { AdminModule } from './components/AdminModule';
 import { ApprovedRepository } from './components/ApprovedRepository';
 import { AccessControl } from './components/AccessControl';
+import { AuditLog } from './components/AuditLog';
 import { Documento, Proceso, TipoDocumento, UserRole, UserProfile } from './types';
+import { logAccion } from './lib/audit';
 import { LogIn, Loader2, Clock, AlertTriangle, LogOut } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -56,10 +58,44 @@ export default function App() {
         .eq('id', userId)
         .maybeSingle();
       
+      if (error && error.code === 'PGRST116') {
+        // El perfil no existe, si es el correo maestro, lo creamos
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email === 'jefaturasostenibilidad@gmail.com') {
+          const { data: newProfile, error: createError } = await supabase
+            .from('perfiles')
+            .insert([{
+              id: userId,
+              email: user.email,
+              nombre_completo: 'Administrador Maestro',
+              rol: 'superadmin',
+              estado: 'activo'
+            }])
+            .select()
+            .single();
+          
+          if (!createError && newProfile) {
+            setProfile(newProfile);
+            return;
+          }
+        }
+        throw error;
+      }
       if (error) throw error;
       
       if (data) {
+        // REGLA DE ORO: El correo maestro siempre debe ser superadmin
+        // Usamos el email de la sesión/usuario de auth por si no está en la tabla perfiles
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email === 'jefaturasostenibilidad@gmail.com' && data.rol !== 'superadmin') {
+          data.rol = 'superadmin';
+          // Intento de corrección automática en DB
+          supabase.from('perfiles').update({ rol: 'superadmin' }).eq('id', userId).then();
+        }
+        
         setProfile(data);
+        // LOG: Login
+        logAccion(userId, 'LOGIN', 'auth', userId, { email: data.email });
       } else {
         console.warn('Profile not found for user:', userId);
         setProfile(null);
@@ -425,13 +461,15 @@ export default function App() {
       case 'dashboard':
         return <Dashboard documents={documents} processes={processes} />;
       case 'approved':
-        return <ApprovedRepository documents={documents} processes={processes} types={types} />;
+        return <ApprovedRepository documents={documents} processes={processes} types={types} currentUserProfile={profile} />;
       case 'documents':
         return <DocumentList documents={documents} processes={processes} types={types} onRefresh={fetchData} isReadOnly={role === 'visualizador'} currentUserProfile={profile} />;
       case 'admin':
-        return <AdminModule processes={processes} types={types} onRefresh={fetchData} onViewChange={setCurrentView} />;
+        return <AdminModule processes={processes} types={types} onRefresh={fetchData} onViewChange={setCurrentView} currentUserProfile={profile} />;
       case 'access_control':
         return <AccessControl />;
+      case 'audit_log':
+        return <AuditLog />;
       default:
         return <Dashboard documents={documents} processes={processes} />;
     }
@@ -444,6 +482,7 @@ export default function App() {
       case 'documents': return 'Gestión Documental';
       case 'admin': return 'Configuración del Sistema';
       case 'access_control': return 'Control de Accesos';
+      case 'audit_log': return 'Auditoría y Trazabilidad';
       default: return 'EVECA Sostenibilidad';
     }
   };

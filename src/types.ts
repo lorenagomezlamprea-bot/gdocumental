@@ -33,6 +33,20 @@ export interface VersionDocumento {
   archivo_url: string;
 }
 
+export interface LogAuditoria {
+  id: string;
+  usuario_id: string;
+  accion: string;
+  tabla: string;
+  registro_id?: string;
+  detalles: any;
+  fecha: string;
+  perfiles?: {
+    nombre_completo: string;
+    email: string;
+  };
+}
+
 export interface Documento {
   id: string;
   codigo: string;

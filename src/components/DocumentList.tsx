@@ -23,6 +23,7 @@ import {
 import { cn, formatDate, getStatusColor } from '../lib/utils';
 import { Documento, Proceso, TipoDocumento, UserProfile, VersionDocumento, DocumentStatus } from '../types';
 import { supabase } from '../lib/supabase';
+import { logAccion } from '../lib/audit';
 
 interface DocumentListProps {
   documents: Documento[];
@@ -126,6 +127,18 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
         .eq('id', doc.id);
 
       if (error) throw error;
+      
+      // LOG: Status Change
+      if (currentUserProfile) {
+        logAccion(
+          currentUserProfile.id,
+          'UPDATE',
+          'documentos',
+          doc.id,
+          { estado_anterior: doc.estado, estado_nuevo: newStatus, codigo: doc.codigo }
+        );
+      }
+      
       onRefresh();
       setStatusDropdown(null);
     } catch (err: any) {
@@ -163,6 +176,18 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
         .eq('id', selectedDoc.id);
 
       if (error) throw error;
+
+      // LOG: Deletion
+      if (currentUserProfile && selectedDoc) {
+        logAccion(
+          currentUserProfile.id,
+          'DELETE',
+          'documentos',
+          selectedDoc.id,
+          { codigo: selectedDoc.codigo, nombre: selectedDoc.nombre }
+        );
+      }
+
       onRefresh();
       setIsDeleteConfirmOpen(false);
       setSelectedDoc(null);
@@ -258,6 +283,17 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
         .eq('id', selectedDoc.id);
 
       if (updateError) throw updateError;
+
+      // LOG: New Version
+      if (currentUserProfile && selectedDoc) {
+        logAccion(
+          currentUserProfile.id,
+          'UPDATE',
+          'documentos',
+          selectedDoc.id,
+          { accion: 'nueva_version', version: nextVersion, codigo: selectedDoc.codigo }
+        );
+      }
 
       onRefresh();
       setIsNewVersionModalOpen(false);
@@ -413,6 +449,17 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
         alert(msg + ` (Archivo subido en: ${filePath})`);
         setIsSubmitting(false);
         return;
+      }
+
+      // LOG: Creation
+      if (currentUserProfile) {
+        logAccion(
+          currentUserProfile.id,
+          'CREATE',
+          'documentos',
+          undefined, // ID not available yet easily or we could fetch it
+          { codigo: codigoGenerated, nombre: newDoc.nombre }
+        );
       }
 
       // Éxito total

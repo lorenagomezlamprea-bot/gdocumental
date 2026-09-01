@@ -10,18 +10,20 @@ import {
   X
 } from 'lucide-react';
 import { cn, formatDate } from '../lib/utils';
-import { Documento, Proceso, TipoDocumento } from '../types';
+import { Documento, Proceso, TipoDocumento, UserProfile } from '../types';
 import { downloadWithWatermark } from '../lib/watermark';
 import { supabase } from '../lib/supabase';
 
 export const ApprovedRepository = ({ 
   documents, 
   processes, 
-  types 
+  types,
+  currentUserProfile
 }: { 
   documents: Documento[], 
   processes: Proceso[], 
-  types: TipoDocumento[] 
+  types: TipoDocumento[],
+  currentUserProfile: UserProfile | null
 }) => {
   const [selectedProcess, setSelectedProcess] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +34,7 @@ export const ApprovedRepository = ({
     setIsDownloading(doc.id);
     setErrorMessage(null);
     try {
-      await downloadWithWatermark(doc);
+      await downloadWithWatermark(doc, currentUserProfile?.id);
     } catch (err: any) {
       console.error('Download error:', err);
       setErrorMessage(`No se pudo generar la copia controlada: ${err.message || 'Error desconocido'}. Puede intentar abrirlo para vista previa.`);

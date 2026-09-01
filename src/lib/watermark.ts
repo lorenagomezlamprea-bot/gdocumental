@@ -4,8 +4,9 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Documento } from '../types';
 import { supabase } from './supabase';
+import { logAccion } from './audit';
 
-export const downloadWithWatermark = async (doc: Documento) => {
+export const downloadWithWatermark = async (doc: Documento, userId?: string) => {
   if (!doc.archivo_url) {
     alert('No hay archivo disponible para descargar.');
     return;
@@ -28,6 +29,12 @@ export const downloadWithWatermark = async (doc: Documento) => {
     if (!response.ok) {
       throw new Error(`Error al obtener el archivo: ${response.status} ${response.statusText}`);
     }
+
+    // LOG: Download
+    if (userId) {
+      logAccion(userId, 'DOWNLOAD', 'documentos', doc.id, { codigo: doc.codigo, nombre: doc.nombre });
+    }
+
     const blob = await response.blob();
     const arrayBuffer = await blob.arrayBuffer();
     const fileName = doc.archivo_url.split('/').pop() || 'documento';
