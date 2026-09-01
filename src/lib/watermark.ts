@@ -128,6 +128,9 @@ async function processExcel(buffer: ArrayBuffer, fileName: string, watermark: st
       watermarkCell.value = watermark;
       watermarkCell.font = { size: 24, color: { argb: 'FFD3D3D3' }, bold: true };
     }
+
+    // Freeze top row
+    worksheet.views = [{ state: 'frozen', ySplit: 1 }];
   });
 
   const outputBuffer = await workbook.xlsx.writeBuffer();
