@@ -113,15 +113,13 @@ async function processExcel(buffer: ArrayBuffer, fileName: string, watermark: st
 
   workbook.eachSheet((worksheet) => {
     // Header & Footer
-    if (worksheet.headerFooter) {
-      worksheet.headerFooter.oddFooter = `&L&8${footer1}\n&L&7${footer2}`;
-    } else {
-      // In case headerFooter object doesn't exist, we skip or handle differently if needed
-      console.warn('Worksheet headerFooter is not defined, skipping footer.');
-    }
+    if (!worksheet.headerFooter) worksheet.headerFooter = {};
+    worksheet.headerFooter.oddFooter = `&L&8${footer1}\n&L&7${footer2}`;
     
-    // Watermark approach: Prominent cell or Background (Background is harder with ExcelJS, using prominent cell)
-    // Adding a note in the first available top rows
+    // Print Header Stamp
+    worksheet.headerFooter.oddHeader = "&C&\"Arial,Bold\"&12 APROBADO DESDE GESTOR DOCUMENTAL DE SOSTENIBILIDAD";
+
+    // Watermark approach
     const watermarkCell = worksheet.getCell('A1');
     const existingValue = watermarkCell.value;
     if (!existingValue) {
@@ -131,6 +129,34 @@ async function processExcel(buffer: ArrayBuffer, fileName: string, watermark: st
 
     // Freeze top row
     worksheet.views = [{ state: 'frozen', ySplit: 1 }];
+
+    // Protection and locking
+    worksheet.eachRow((row) => {
+        row.eachCell((cell) => {
+            const val = String(cell.value || '').toLowerCase();
+            const isHeaderOrMetadata = val.includes('código') || val.includes('versión') || val.includes('fecha');
+            
+            // Protect headers, metadata, and formulas (hidden)
+            if (cell.formula || isHeaderOrMetadata) {
+                cell.protection = { locked: true, hidden: true };
+            } else {
+                // Ensure other cells are also locked to prevent modification in a "Control de Calidad" context
+                cell.protection = { locked: true };
+            }
+        });
+    });
+
+    worksheet.protect('90180360', {
+        insertRows: false,
+        insertColumns: false,
+        deleteRows: false,
+        deleteColumns: false,
+        formatCells: false,
+        formatColumns: false,
+        formatRows: false,
+        selectLockedCells: true,
+        selectUnlockedCells: true,
+    });
   });
 
   const outputBuffer = await workbook.xlsx.writeBuffer();
