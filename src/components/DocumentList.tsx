@@ -521,13 +521,16 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
       </div>
 
       {/* Processes Summary Panel */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {processes.map(p => (
-          <div key={p.id} className="bg-dark-card border border-slate-800 rounded-2xl p-4 shadow-lg">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 truncate" title={p.nombre}>{p.abreviatura}</p>
-            <p className="text-2xl font-black text-white">{lastConsecutivesByProcess[p.id] || 0}</p>
-          </div>
-        ))}
+      <div className="mb-6">
+        <h3 className="text-sm font-black text-white uppercase tracking-widest mb-4">Último Consecutivo por Proceso</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {processes.map(p => (
+            <div key={p.id} className="bg-dark-card border border-slate-800 rounded-2xl p-4 shadow-lg">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 truncate" title={p.nombre}>{p.abreviatura}</p>
+              <p className="text-2xl font-black text-white">{lastConsecutivesByProcess[p.id] || 0}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Filters Bar */}
