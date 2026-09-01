@@ -98,3 +98,19 @@ WITH CHECK (
     WHERE id = auth.uid() AND (rol = 'superadmin' OR rol = 'administrador')
   )
 );
+
+-- 7. FUNCION PARA VACIAR CONSECUTIVOS (RPC)
+-- Proporciona un borrado masivo seguro e instantaneo
+CREATE OR REPLACE FUNCTION vaciar_consecutivos()
+RETURNS void AS $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM perfiles 
+    WHERE id = auth.uid() AND (rol = 'superadmin' OR rol = 'administrador')
+  ) THEN
+    DELETE FROM consecutivos;
+  ELSE
+    RAISE EXCEPTION 'No tiene permisos para realizar esta accion';
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

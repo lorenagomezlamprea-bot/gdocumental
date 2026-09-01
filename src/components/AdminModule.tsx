@@ -365,13 +365,18 @@ export const AdminModule = ({
                     onClick={async () => {
                       if (window.confirm('¿Está seguro de que desea vaciar el historial de consecutivos? Esto reiniciará todos los contadores a cero.')) {
                         try {
-                          // Usamos un filtro sobre el ID que siempre existe para evitar errores de columnas nombradas distinto
-                          const { error } = await supabase
-                            .from('consecutivos')
-                            .delete()
-                            .neq('id', '00000000-0000-0000-0000-000000000000');
+                          // Usamos una función RPC para un borrado masivo seguro y sin errores de columna
+                          const { error } = await supabase.rpc('vaciar_consecutivos');
                           
-                          if (error) throw error;
+                          if (error) {
+                            // Si la función RPC no existe aún, intentamos el borrado directo como respaldo
+                            const { error: deleteError } = await supabase
+                              .from('consecutivos')
+                              .delete()
+                              .match({}); // Intento de borrado total
+                            
+                            if (deleteError) throw deleteError;
+                          }
                           
                           // Registramos la acción solo si el borrado fue exitoso
                           if (currentUserProfile) {
@@ -385,7 +390,7 @@ export const AdminModule = ({
                           alert('Historial de consecutivos vaciado correctamente. Los contadores han vuelto a cero.');
                         } catch (err: any) {
                           console.error('Error detallado al vaciar:', err);
-                          alert(`No se pudo vaciar el historial: ${err.message || 'Error de conexión'}. Verifique los permisos en Supabase.`);
+                          alert(`No se pudo vaciar el historial: ${err.message || 'Error de conexión'}. Verifique que haya ejecutado el script SQL actualizado.`);
                         }
                       }
                     }}
