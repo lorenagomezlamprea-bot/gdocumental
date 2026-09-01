@@ -33,20 +33,24 @@ interface StatCardProps {
 }
 
 const StatCard = ({ label, value, icon: Icon, color, trend }: StatCardProps) => (
-  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-    <div className="flex justify-between items-start mb-4">
-      <div className={cn("p-3 rounded-xl", color)}>
+  <div className="bg-dark-card p-8 rounded-[2rem] shadow-2xl border border-slate-800/50 flex flex-col relative overflow-hidden group">
+    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-full -mr-16 -mt-16 blur-2xl" />
+    <div className="flex justify-between items-start mb-6 relative z-10">
+      <div className={cn("p-4 rounded-2xl shadow-lg", color)}>
         <Icon className="w-6 h-6 text-white" />
       </div>
       {trend && (
-        <span className="flex items-center text-green-600 text-xs font-bold bg-green-50 px-2 py-1 rounded-full">
+        <span className="flex items-center text-accent-cyan text-[10px] font-black uppercase tracking-widest bg-accent-cyan/10 px-3 py-1.5 rounded-xl border border-accent-cyan/20">
           <ArrowUpRight className="w-3 h-3 mr-1" />
           {trend}
         </span>
       )}
     </div>
-    <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
-    <h3 className="text-3xl font-bold text-gray-900">{value}</h3>
+    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 relative z-10">{label}</p>
+    <div className="flex items-baseline space-x-2 relative z-10">
+      <h3 className="text-4xl font-black text-white tracking-tighter">{value}</h3>
+      <span className="text-slate-600 font-bold text-xs">unidades</span>
+    </div>
   </div>
 );
 
@@ -72,68 +76,111 @@ export const Dashboard = ({ documents, processes }: { documents: Documento[], pr
   }));
 
   const statusData = [
-    { name: 'Aprobados', value: stats.approved, color: '#1B4332' },
-    { name: 'Revisión', value: stats.review, color: '#D4A373' },
-    { name: 'Borrador', value: stats.draft, color: '#2D6A4F' },
-    { name: 'Vencidos', value: stats.expired, color: '#C1121F' },
+    { name: 'Aprobados', value: stats.approved, color: '#d946ef' },
+    { name: 'Revisión', value: stats.review, color: '#22d3ee' },
+    { name: 'Borrador', value: stats.draft, color: '#3b82f6' },
+    { name: 'Vencidos', value: stats.expired, color: '#f43f5e' },
   ];
 
   const recentDocs = documents.slice(0, 5);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard label="Documentos Aprobados" value={stats.approved} icon={FileCheck} color="bg-eveca-primary" />
-        <StatCard label="En Revisión" value={stats.review} icon={FileClock} color="bg-eveca-accent" />
-        <StatCard label="Borradores" value={stats.draft} icon={FileText} color="bg-eveca-green-light" />
-        <StatCard label="Vencidos/Próximos" value={stats.expired} icon={FileWarning} color="bg-eveca-red" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <StatCard label="Aprobados" value={stats.approved} icon={FileCheck} color="bg-gradient-to-br from-accent-purple to-accent-blue" trend="+12%" />
+        <StatCard label="En Revisión" value={stats.review} icon={FileClock} color="bg-gradient-to-br from-accent-cyan to-accent-blue" />
+        <StatCard label="Borradores" value={stats.draft} icon={FileText} color="bg-slate-800" />
+        <StatCard label="Vencidos" value={stats.expired} icon={FileWarning} color="bg-gradient-to-br from-rose-500 to-orange-500" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Main Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-gray-800">Distribución por Proceso</h3>
-            <button className="text-gray-400 hover:text-gray-600"><MoreVertical className="w-5 h-5" /></button>
+        <div className="lg:col-span-2 bg-dark-card p-10 rounded-[2.5rem] shadow-2xl border border-slate-800/50">
+          <div className="flex justify-between items-center mb-10">
+            <div>
+              <h3 className="text-xl font-black text-white tracking-tight">Distribución por Proceso</h3>
+              <p className="text-xs text-slate-500 font-bold mt-1">Análisis de volumen documental</p>
+            </div>
+            <button className="p-2 text-slate-600 hover:text-white transition-colors bg-slate-800/30 rounded-xl">
+              <MoreVertical className="w-5 h-5" />
+            </button>
           </div>
-          <div className="h-80">
+          <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={processData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F3F5" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#868E96', fontSize: 12}} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#868E96', fontSize: 12}} />
-                <Tooltip 
-                  cursor={{fill: '#F8F9FA'}}
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{fill: '#64748b', fontSize: 10, fontWeight: 800}} 
+                  dy={10}
                 />
-                <Bar dataKey="value" fill="#1B4332" radius={[4, 4, 0, 0]} />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{fill: '#64748b', fontSize: 10, fontWeight: 800}} 
+                />
+                <Tooltip 
+                  cursor={{fill: '#1e293b', radius: 8}}
+                  contentStyle={{ 
+                    backgroundColor: '#1a1d23', 
+                    borderRadius: '20px', 
+                    border: '1px solid #334155', 
+                    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)',
+                    padding: '12px 16px'
+                  }}
+                  itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                />
+                <Bar dataKey="value" fill="url(#colorBar)" radius={[10, 10, 0, 0]} barSize={40}>
+                  <defs>
+                    <linearGradient id="colorBar" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#d946ef" stopOpacity={1}/>
+                      <stop offset="100%" stopColor="#3b82f6" stopOpacity={1}/>
+                    </linearGradient>
+                  </defs>
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Status Distribution */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <h3 className="text-lg font-bold text-gray-800 mb-6">Estado Global</h3>
-          <div className="h-64">
+        <div className="bg-dark-card p-10 rounded-[2.5rem] shadow-2xl border border-slate-800/50">
+          <h3 className="text-xl font-black text-white tracking-tight mb-2">Estado Global</h3>
+          <p className="text-xs text-slate-500 font-bold mb-10">Resumen de cumplimiento</p>
+          <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={statusData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  innerRadius={70}
+                  outerRadius={100}
+                  paddingAngle={8}
                   dataKey="value"
+                  stroke="none"
                 >
                   {statusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend verticalAlign="bottom" height={36}/>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1a1d23', 
+                    borderRadius: '20px', 
+                    border: '1px solid #334155',
+                    padding: '12px'
+                  }}
+                />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36} 
+                  iconType="circle"
+                  formatter={(value) => <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">{value}</span>}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -141,42 +188,55 @@ export const Dashboard = ({ documents, processes }: { documents: Documento[], pr
       </div>
 
       {/* Recent Documents */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-50 flex justify-between items-center">
-          <h3 className="text-lg font-bold text-gray-800">Últimas Modificaciones</h3>
-          <button className="text-eveca-primary text-sm font-bold hover:underline">Ver todo</button>
+      <div className="bg-dark-card rounded-[2.5rem] shadow-2xl border border-slate-800/50 overflow-hidden">
+        <div className="p-10 border-b border-slate-800/50 flex justify-between items-center">
+          <div>
+            <h3 className="text-xl font-black text-white tracking-tight">Últimas Modificaciones</h3>
+            <p className="text-xs text-slate-500 font-bold mt-1">Actividad reciente del sistema</p>
+          </div>
+          <button className="px-6 py-3 bg-slate-800/50 text-accent-purple text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-800 transition-all border border-slate-800">
+            Ver todo el historial
+          </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Código</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Nombre</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Versión</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+              <tr className="bg-slate-800/20">
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Código</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Documento</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Versión</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Estado</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Actualizado</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-slate-800/50">
               {recentDocs.map((doc) => (
-                <tr key={doc.id} className="hover:bg-gray-50/30 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-eveca-primary">{doc.codigo}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">{doc.nombre}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">v{doc.version}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-bold border", getStatusColor(doc.estado))}>
+                <tr key={doc.id} className="hover:bg-slate-800/30 transition-all group">
+                  <td className="px-10 py-8 whitespace-nowrap text-xs font-black text-accent-purple tracking-wider">{doc.codigo}</td>
+                  <td className="px-10 py-8 whitespace-nowrap">
+                    <p className="text-sm font-black text-white tracking-tight">{doc.nombre}</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase mt-0.5">Sostenibilidad</p>
+                  </td>
+                  <td className="px-10 py-8 whitespace-nowrap text-xs font-bold text-slate-400">v{doc.version}.0</td>
+                  <td className="px-10 py-8 whitespace-nowrap">
+                    <span className={cn(
+                      "px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border",
+                      doc.estado === 'Aprobado' ? "bg-accent-purple/10 text-accent-purple border-accent-purple/20" : 
+                      doc.estado === 'En revisión' ? "bg-accent-cyan/10 text-accent-cyan border-accent-cyan/20" :
+                      "bg-slate-800 text-slate-400 border-slate-700"
+                    )}>
                       {doc.estado}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-10 py-8 whitespace-nowrap text-xs font-bold text-slate-400">
                     <div className="flex items-center">
-                      <Clock className="w-3.5 h-3.5 mr-1.5 text-gray-400" />
+                      <Clock className="w-3.5 h-3.5 mr-2 text-slate-600" />
                       {formatDate(doc.fecha_ultima_revision)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <button className="text-gray-400 hover:text-eveca-primary transition-colors">
+                  <td className="px-10 py-8 whitespace-nowrap text-right">
+                    <button className="p-3 text-slate-600 hover:text-accent-purple hover:bg-accent-purple/10 rounded-xl transition-all">
                       <FileText className="w-5 h-5" />
                     </button>
                   </td>

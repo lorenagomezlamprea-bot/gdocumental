@@ -16,14 +16,14 @@ export function formatDate(date: string | Date) {
 export function getStatusColor(status: string) {
   switch (status) {
     case 'Aprobado':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-accent-purple/10 text-accent-purple border-accent-purple/20';
     case 'En revisión':
-      return 'bg-amber-100 text-amber-800 border-amber-200';
+      return 'bg-accent-cyan/10 text-accent-cyan border-accent-cyan/20';
     case 'Borrador':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
+      return 'bg-slate-800 text-slate-400 border-slate-700';
     case 'Obsoleto':
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-rose-500/10 text-rose-500 border-rose-500/20';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-slate-800 text-slate-400 border-slate-700';
   }
 }

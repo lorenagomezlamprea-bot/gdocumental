@@ -483,13 +483,16 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold text-gray-800">Listado Maestro de Documentos</h3>
+        <div>
+          <h3 className="text-2xl font-black text-white tracking-tight">Listado Maestro</h3>
+          <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">Gestión de documentos de sostenibilidad</p>
+        </div>
         {!isReadOnly && (
           <button 
             onClick={openModal}
-            className="bg-eveca-primary text-white px-4 py-2 rounded-xl flex items-center font-bold text-sm hover:bg-eveca-green-light transition-all shadow-md"
+            className="bg-accent-purple text-white px-8 py-3 rounded-2xl flex items-center font-black text-xs uppercase tracking-widest hover:bg-white hover:text-dark-bg transition-all shadow-xl shadow-accent-purple/20"
           >
             <Plus className="w-4 h-4 mr-2" />
             Nuevo Documento
@@ -498,110 +501,112 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[200px] relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <div className="bg-dark-card p-6 rounded-[2rem] border border-slate-800/50 shadow-2xl flex flex-wrap gap-6 items-center">
+        <div className="flex-1 min-w-[300px] relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input 
             type="text" 
             placeholder="Filtrar por código o nombre..." 
-            className="w-full bg-gray-50 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-eveca-primary transition-all outline-none"
+            className="w-full bg-slate-800/30 border border-slate-800/50 rounded-2xl py-3 pl-12 pr-6 text-sm text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-purple/50 transition-all outline-none"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
-        <select 
-          className="bg-gray-50 border-none rounded-lg py-2 pl-3 pr-8 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-        >
-          <option value="">Todos los Tipos</option>
-          {types.map(t => <option key={t.id} value={t.id}>{t.abreviatura} - {t.nombre}</option>)}
-        </select>
-
-        <select 
-          className="bg-gray-50 border-none rounded-lg py-2 pl-3 pr-8 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
-          value={filterProcess}
-          onChange={(e) => setFilterProcess(e.target.value)}
-        >
-          <option value="">Todos los Procesos</option>
-          {processes.map(p => <option key={p.id} value={p.id}>{p.abreviatura} - {p.nombre}</option>)}
-        </select>
-
-        {!isReadOnly && (
+        <div className="flex gap-4">
           <select 
-            className="bg-gray-50 border-none rounded-lg py-2 pl-3 pr-8 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            className="bg-slate-800/30 border border-slate-800/50 rounded-xl py-2 px-4 text-xs font-black uppercase tracking-widest text-slate-400 focus:ring-2 focus:ring-accent-purple/50 outline-none transition-all"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
           >
-            <option value="">Todos los Estados</option>
-            <option value="Borrador">Borrador</option>
-            <option value="En revisión">En revisión</option>
-            <option value="Aprobado">Aprobado</option>
-            <option value="Obsoleto">Obsoleto</option>
+            <option value="">Tipos</option>
+            {types.map(t => <option key={t.id} value={t.id}>{t.abreviatura}</option>)}
           </select>
-        )}
+
+          <select 
+            className="bg-slate-800/30 border border-slate-800/50 rounded-xl py-2 px-4 text-xs font-black uppercase tracking-widest text-slate-400 focus:ring-2 focus:ring-accent-purple/50 outline-none transition-all"
+            value={filterProcess}
+            onChange={(e) => setFilterProcess(e.target.value)}
+          >
+            <option value="">Procesos</option>
+            {processes.map(p => <option key={p.id} value={p.id}>{p.abreviatura}</option>)}
+          </select>
+
+          {!isReadOnly && (
+            <select 
+              className="bg-slate-800/30 border border-slate-800/50 rounded-xl py-2 px-4 text-xs font-black uppercase tracking-widest text-slate-400 focus:ring-2 focus:ring-accent-purple/50 outline-none transition-all"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="">Estados</option>
+              <option value="Borrador">Borrador</option>
+              <option value="En revisión">En revisión</option>
+              <option value="Aprobado">Aprobado</option>
+              <option value="Obsoleto">Obsoleto</option>
+            </select>
+          )}
+        </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-dark-card rounded-[2.5rem] shadow-2xl border border-slate-800/50 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Documento</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Proceso / Tipo</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Versión</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Próxima Revisión</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+              <tr className="bg-slate-800/20">
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Documento</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Clasificación</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Versión</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Estado</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Revisión</th>
+                <th className="px-10 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-slate-800/50">
               {filteredDocs.map((doc) => {
                 const isNearExpiry = doc.fecha_proxima_revision && new Date(doc.fecha_proxima_revision) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                 const isExpired = doc.fecha_proxima_revision && new Date(doc.fecha_proxima_revision) < new Date();
 
                 return (
-                  <tr key={doc.id} className="hover:bg-gray-50/30 transition-all group">
-                    <td className="px-6 py-4">
+                  <tr key={doc.id} className="hover:bg-slate-800/30 transition-all group">
+                    <td className="px-10 py-8">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-eveca-primary group-hover:text-eveca-green-light transition-colors">{doc.codigo}</span>
-                        <span className="text-sm font-medium text-gray-700 truncate max-w-[250px]">{doc.nombre}</span>
+                        <span className="text-xs font-black text-accent-purple tracking-widest uppercase mb-1">{doc.codigo}</span>
+                        <span className="text-sm font-black text-white tracking-tight group-hover:text-accent-purple transition-colors truncate max-w-[250px]">{doc.nombre}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center space-x-2">
+                        <span className="px-3 py-1 bg-slate-800 rounded-lg text-[10px] font-black text-slate-400 uppercase tracking-widest">
                           {processes.find(p => p.id === doc.proceso_id)?.abreviatura}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
                           {types.find(t => t.id === doc.tipo_id)?.nombre}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-gray-100 text-gray-600">
-                        v{doc.version}
+                    <td className="px-10 py-8 whitespace-nowrap">
+                      <span className="inline-flex items-center px-3 py-1 rounded-xl text-[10px] font-black text-slate-400 bg-slate-800 uppercase tracking-widest">
+                        v{doc.version}.0
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-10 py-8 whitespace-nowrap">
                       <div className="relative" ref={statusDropdown === doc.id ? statusRef : null}>
                         <button 
                           disabled={isReadOnly}
                           onClick={() => setStatusDropdown(statusDropdown === doc.id ? null : doc.id)}
                           className={cn(
-                            "px-2.5 py-0.5 rounded-full text-xs font-bold border transition-all flex items-center",
+                            "px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all flex items-center shadow-lg shadow-black/20",
                             getStatusColor(doc.estado),
-                            !isReadOnly && "hover:shadow-md cursor-pointer"
+                            !isReadOnly && "hover:scale-105 cursor-pointer"
                           )}
                         >
                           {doc.estado}
-                          {!isReadOnly && <ChevronRight className={cn("w-3 h-3 ml-1 transition-transform", statusDropdown === doc.id && "rotate-90")} />}
+                          {!isReadOnly && <ChevronRight className={cn("w-3 h-3 ml-2 transition-transform opacity-50", statusDropdown === doc.id && "rotate-90")} />}
                         </button>
                         
                         {statusDropdown === doc.id && (
-                          <div className="absolute left-0 mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-20 animate-in fade-in zoom-in-95 duration-200">
+                          <div className="absolute left-0 mt-3 w-56 bg-dark-card rounded-2xl shadow-2xl border border-slate-800 p-2 z-20 animate-in fade-in zoom-in-95 duration-200">
                             {(['Borrador', 'En revisión', 'Aprobado', 'Obsoleto'] as DocumentStatus[]).map(status => {
                               const allowed = canChangeStatus(doc, status);
                               if (!allowed && doc.estado !== status) return null;
@@ -612,13 +617,13 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                                   disabled={!allowed || doc.estado === status}
                                   onClick={() => handleStatusChange(doc, status)}
                                   className={cn(
-                                    "w-full text-left px-4 py-2 text-xs font-bold transition-colors",
-                                    doc.estado === status ? "bg-gray-50 text-eveca-primary" : "text-gray-600 hover:bg-gray-50 hover:text-eveca-primary",
-                                    !allowed && "opacity-50 cursor-not-allowed"
+                                    "w-full text-left px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all mb-1 last:mb-0 flex items-center justify-between",
+                                    doc.estado === status ? "bg-accent-purple/10 text-accent-purple" : "text-slate-400 hover:bg-slate-800 hover:text-white",
+                                    !allowed && "opacity-30 cursor-not-allowed"
                                   )}
                                 >
                                   {status}
-                                  {doc.estado === status && <Check className="w-3 h-3 float-right" />}
+                                  {doc.estado === status && <Check className="w-3.5 h-3.5" />}
                                 </button>
                               );
                             })}
@@ -626,27 +631,27 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-xs font-bold">
+                    <td className="px-10 py-8 whitespace-nowrap">
                       <div className={cn(
-                        "flex items-center",
-                        isExpired ? "text-red-600" : isNearExpiry ? "text-amber-600" : "text-gray-500"
+                        "flex items-center text-[10px] font-black uppercase tracking-widest",
+                        isExpired ? "text-rose-500" : isNearExpiry ? "text-amber-500" : "text-slate-500"
                       )}>
-                        {isExpired ? <AlertCircle className="w-3.5 h-3.5 mr-1.5" /> : <Clock className="w-3.5 h-3.5 mr-1.5" />}
+                        {isExpired ? <AlertCircle className="w-3.5 h-3.5 mr-2" /> : <Clock className="w-3.5 h-3.5 mr-2" />}
                         {formatDate(doc.fecha_proxima_revision)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <div className="flex items-center justify-end space-x-1">
+                    <td className="px-10 py-8 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end space-x-2">
                         <button 
                           onClick={() => { setSelectedDoc(doc); setIsViewModalOpen(true); }}
-                          className="p-2 text-gray-400 hover:text-eveca-primary hover:bg-gray-50 rounded-lg transition-all" 
+                          className="p-3 text-slate-500 hover:text-accent-cyan hover:bg-accent-cyan/10 rounded-xl transition-all" 
                           title="Ver detalles"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => { setSelectedDoc(doc); setIsHistoryModalOpen(true); fetchHistory(doc); }}
-                          className="p-2 text-gray-400 hover:text-eveca-primary hover:bg-gray-50 rounded-lg transition-all" 
+                          className="p-3 text-slate-500 hover:text-accent-purple hover:bg-accent-purple/10 rounded-xl transition-all" 
                           title="Historial"
                         >
                           <History className="w-4 h-4" />
@@ -656,36 +661,36 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                             <button 
                               onClick={() => setActiveDropdown(activeDropdown === doc.id ? null : doc.id)}
                               className={cn(
-                                "p-2 text-gray-400 hover:text-eveca-primary hover:bg-gray-50 rounded-lg transition-all",
-                                activeDropdown === doc.id && "text-eveca-primary bg-gray-50"
+                                "p-3 text-slate-500 hover:text-white hover:bg-slate-800 rounded-xl transition-all",
+                                activeDropdown === doc.id && "text-white bg-slate-800"
                               )}
                             >
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                             
                             {activeDropdown === doc.id && (
-                              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-30 animate-in fade-in zoom-in-95 duration-200">
+                              <div className="absolute right-0 mt-3 w-64 bg-dark-card rounded-2xl shadow-2xl border border-slate-800 p-2 z-30 animate-in fade-in zoom-in-95 duration-200">
                                 <button 
                                   onClick={() => { setSelectedDoc(doc); setIsNewVersionModalOpen(true); setActiveDropdown(null); }}
-                                  className="w-full text-left px-4 py-2.5 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-eveca-primary flex items-center transition-colors"
+                                  className="w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl flex items-center transition-all"
                                 >
-                                  <Upload className="w-3.5 h-3.5 mr-2.5" />
-                                  Subir nueva versión
+                                  <Upload className="w-4 h-4 mr-4 text-accent-purple" />
+                                  Nueva versión
                                 </button>
                                 <button 
                                   onClick={() => { setSelectedDoc(doc); setIsEditModalOpen(true); setActiveDropdown(null); }}
-                                  className="w-full text-left px-4 py-2.5 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-eveca-primary flex items-center transition-colors"
+                                  className="w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl flex items-center transition-all"
                                 >
-                                  <Edit className="w-3.5 h-3.5 mr-2.5" />
-                                  Editar metadatos
+                                  <Edit className="w-4 h-4 mr-4 text-accent-cyan" />
+                                  Metadatos
                                 </button>
                                 {(currentUserProfile?.rol === 'superadmin') && (
                                   <button 
                                     onClick={() => { setSelectedDoc(doc); setIsDeleteConfirmOpen(true); setActiveDropdown(null); }}
-                                    className="w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center transition-colors border-t border-gray-50 mt-1"
+                                    className="w-full text-left px-5 py-4 text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500/5 rounded-xl flex items-center transition-all border-t border-slate-800 mt-2"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5 mr-2.5" />
-                                    Eliminar documento
+                                    <Trash2 className="w-4 h-4 mr-4" />
+                                    Eliminar
                                   </button>
                                 )}
                               </div>

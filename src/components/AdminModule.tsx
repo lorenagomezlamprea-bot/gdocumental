@@ -141,25 +141,27 @@ export const AdminModule = ({
   };
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-        <div className="flex items-center mb-8">
-          <div className="bg-eveca-accent/10 p-3 rounded-2xl mr-4">
-            <Settings className="w-6 h-6 text-eveca-accent" />
+    <div className="space-y-10">
+      <div className="bg-dark-card p-10 rounded-[2.5rem] border border-slate-800/50 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-accent-purple/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+        
+        <div className="flex items-center mb-12 relative z-10">
+          <div className="bg-accent-purple/10 p-5 rounded-3xl mr-6 border border-accent-purple/20 shadow-inner">
+            <Settings className="w-8 h-8 text-accent-purple" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Administración del Sistema</h2>
-            <p className="text-sm text-gray-500">Gestione los parámetros maestros y usuarios del gestor documental.</p>
+            <h2 className="text-2xl font-black text-white tracking-tight">Panel de Control</h2>
+            <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">Administración de procesos y parámetros maestros</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
           {/* Processes Management */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex justify-between items-center px-2">
               <div className="flex items-center">
-                <Network className="w-5 h-5 text-eveca-primary mr-2" />
-                <h3 className="font-bold text-gray-700">Procesos</h3>
+                <Network className="w-5 h-5 text-accent-purple mr-3" />
+                <h3 className="font-black text-white text-xs uppercase tracking-[0.25em]">Procesos</h3>
               </div>
               <button 
                 onClick={() => {
@@ -167,71 +169,71 @@ export const AdminModule = ({
                   setFormData({ nombre: '', abreviatura: '', periodo_revision_anos: 1 });
                   setIsAddingProcess(true);
                 }}
-                className="text-eveca-primary hover:bg-eveca-primary/5 p-1 rounded-lg transition-colors"
+                className="bg-accent-purple/10 text-accent-purple hover:bg-accent-purple hover:text-white p-2 rounded-xl transition-all"
               >
                 <Plus className="w-5 h-5" />
               </button>
             </div>
             
             {isAddingProcess && (
-              <form onSubmit={handleSaveProcess} className="bg-gray-50 p-4 rounded-2xl border border-eveca-primary/20 space-y-4 animate-in slide-in-from-top-2 duration-200">
-                <div className="grid grid-cols-3 gap-3">
+              <form onSubmit={handleSaveProcess} className="bg-slate-800/30 p-6 rounded-[2rem] border border-accent-purple/30 space-y-6 animate-in slide-in-from-top-2 duration-300">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Nombre</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Nombre</label>
                     <input 
                       required
-                      className="w-full bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+                      className="w-full bg-dark-bg border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-accent-purple outline-none"
                       value={formData.nombre}
                       onChange={e => setFormData({...formData, nombre: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Abrev.</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Abrev.</label>
                     <input 
                       required
-                      className="w-full bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+                      className="w-full bg-dark-bg border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-accent-purple outline-none"
                       value={formData.abreviatura}
                       onChange={e => setFormData({...formData, abreviatura: e.target.value})}
                     />
                   </div>
                 </div>
-                <div className="flex justify-end space-x-2">
-                  <button type="button" onClick={() => setIsAddingProcess(false)} className="px-3 py-1.5 text-xs font-bold text-gray-400">Cancelar</button>
-                  <button disabled={isSubmitting} type="submit" className="bg-eveca-primary text-white px-4 py-1.5 rounded-lg text-xs font-bold flex items-center">
-                    {isSubmitting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                <div className="flex justify-end space-x-3">
+                  <button type="button" onClick={() => setIsAddingProcess(false)} className="px-4 py-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Cancelar</button>
+                  <button disabled={isSubmitting} type="submit" className="bg-accent-purple text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center shadow-lg shadow-accent-purple/20 transition-all hover:scale-105">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Guardar
                   </button>
                 </div>
               </form>
             )}
 
-            <div className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
-              <div className="divide-y divide-gray-100">
+            <div className="bg-slate-800/20 rounded-[2rem] overflow-hidden border border-slate-800/50">
+              <div className="divide-y divide-slate-800/50">
                 {processes.length > 0 ? processes.map(p => (
-                  <div key={p.id} className="p-4 flex items-center justify-between hover:bg-white transition-colors group">
+                  <div key={p.id} className="p-6 flex items-center justify-between hover:bg-slate-800/40 transition-all group">
                     <div className="flex items-center">
-                      <span className="w-10 h-10 flex items-center justify-center bg-white rounded-xl text-xs font-bold text-eveca-primary shadow-sm border border-gray-100 mr-3">
+                      <span className="w-12 h-12 flex items-center justify-center bg-dark-card rounded-2xl text-xs font-black text-accent-purple shadow-xl border border-slate-800 mr-4 group-hover:scale-110 transition-transform">
                         {p.abreviatura}
                       </span>
-                      <span className="text-sm font-bold text-gray-600">{p.nombre}</span>
+                      <span className="text-sm font-black text-white tracking-tight">{p.nombre}</span>
                     </div>
-                    <button onClick={() => startEdit('proceso', p)} className="p-2 text-gray-300 hover:text-eveca-primary opacity-0 group-hover:opacity-100 transition-all">
+                    <button onClick={() => startEdit('proceso', p)} className="p-3 text-slate-600 hover:text-accent-purple transition-all opacity-0 group-hover:opacity-100">
                       <Edit2 className="w-4 h-4" />
                     </button>
                   </div>
                 )) : (
-                  <p className="p-8 text-center text-xs text-gray-400 font-bold uppercase italic">No hay procesos registrados</p>
+                  <p className="p-12 text-center text-[10px] text-slate-600 font-black uppercase tracking-widest italic">No hay procesos</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Document Types Management */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex justify-between items-center px-2">
               <div className="flex items-center">
-                <Layers className="w-5 h-5 text-eveca-primary mr-2" />
-                <h3 className="font-bold text-gray-700">Tipos de Documento</h3>
+                <Layers className="w-5 h-5 text-accent-cyan mr-3" />
+                <h3 className="font-black text-white text-xs uppercase tracking-[0.25em]">Tipos</h3>
               </div>
               <button 
                 onClick={() => {
@@ -239,113 +241,113 @@ export const AdminModule = ({
                   setFormData({ nombre: '', abreviatura: '', periodo_revision_anos: 1 });
                   setIsAddingType(true);
                 }}
-                className="text-eveca-primary hover:bg-eveca-primary/5 p-1 rounded-lg transition-colors"
+                className="bg-accent-cyan/10 text-accent-cyan hover:bg-accent-cyan hover:text-white p-2 rounded-xl transition-all"
               >
                 <Plus className="w-5 h-5" />
               </button>
             </div>
 
             {isAddingType && (
-              <form onSubmit={handleSaveType} className="bg-gray-50 p-4 rounded-2xl border border-eveca-primary/20 space-y-4 animate-in slide-in-from-top-2 duration-200">
-                <div className="grid grid-cols-3 gap-3">
+              <form onSubmit={handleSaveType} className="bg-slate-800/30 p-6 rounded-[2rem] border border-accent-cyan/30 space-y-6 animate-in slide-in-from-top-2 duration-300">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Nombre</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Nombre</label>
                     <input 
                       required
-                      className="w-full bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+                      className="w-full bg-dark-bg border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-accent-cyan outline-none"
                       value={formData.nombre}
                       onChange={e => setFormData({...formData, nombre: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Abrev.</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Abrev.</label>
                     <input 
                       required
-                      className="w-full bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+                      className="w-full bg-dark-bg border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-accent-cyan outline-none"
                       value={formData.abreviatura}
                       onChange={e => setFormData({...formData, abreviatura: e.target.value})}
                     />
                   </div>
                   <div className="col-span-3">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase">Período de Revisión (Años)</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block">Revisión (Años)</label>
                     <input 
                       type="number"
                       required
                       min={1}
-                      className="w-full bg-white border border-gray-200 rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+                      className="w-full bg-dark-bg border border-slate-800 rounded-xl py-3 px-4 text-sm text-white focus:ring-1 focus:ring-accent-cyan outline-none"
                       value={formData.periodo_revision_anos}
                       onChange={e => setFormData({...formData, periodo_revision_anos: parseInt(e.target.value)})}
                     />
                   </div>
                 </div>
-                <div className="flex justify-end space-x-2">
-                  <button type="button" onClick={() => setIsAddingType(false)} className="px-3 py-1.5 text-xs font-bold text-gray-400">Cancelar</button>
-                  <button disabled={isSubmitting} type="submit" className="bg-eveca-primary text-white px-4 py-1.5 rounded-lg text-xs font-bold flex items-center">
-                    {isSubmitting ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                <div className="flex justify-end space-x-3">
+                  <button type="button" onClick={() => setIsAddingType(false)} className="px-4 py-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">Cancelar</button>
+                  <button disabled={isSubmitting} type="submit" className="bg-accent-cyan text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center shadow-lg shadow-accent-cyan/20 transition-all hover:scale-105">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Guardar
                   </button>
                 </div>
               </form>
             )}
 
-            <div className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100">
-              <div className="divide-y divide-gray-100">
+            <div className="bg-slate-800/20 rounded-[2rem] overflow-hidden border border-slate-800/50">
+              <div className="divide-y divide-slate-800/50">
                 {types.length > 0 ? types.map(t => (
-                  <div key={t.id} className="p-4 flex items-center justify-between hover:bg-white transition-colors group">
+                  <div key={t.id} className="p-6 flex items-center justify-between hover:bg-slate-800/40 transition-all group">
                     <div className="flex flex-col">
                       <div className="flex items-center">
-                        <span className="text-sm font-bold text-gray-600 group-hover:text-eveca-primary transition-colors">{t.nombre}</span>
-                        <span className="ml-2 px-1.5 py-0.5 bg-eveca-primary/10 text-eveca-primary text-[10px] font-bold rounded uppercase tracking-wider">
+                        <span className="text-sm font-black text-white tracking-tight group-hover:text-accent-cyan transition-colors">{t.nombre}</span>
+                        <span className="ml-3 px-2 py-0.5 bg-accent-cyan/10 text-accent-cyan text-[10px] font-black rounded-lg uppercase tracking-widest border border-accent-cyan/20">
                           {t.abreviatura}
                         </span>
                       </div>
-                      <span className="text-[10px] text-gray-400 font-bold mt-1 uppercase">Revisión cada {t.periodo_revision_anos} años</span>
+                      <span className="text-[10px] text-slate-500 font-black mt-1 uppercase tracking-widest italic">Rev: {t.periodo_revision_anos} {t.periodo_revision_anos === 1 ? 'año' : 'años'}</span>
                     </div>
-                    <button onClick={() => startEdit('tipo', t)} className="p-2 text-gray-300 hover:text-eveca-primary opacity-0 group-hover:opacity-100 transition-all">
+                    <button onClick={() => startEdit('tipo', t)} className="p-3 text-slate-600 hover:text-accent-cyan transition-all opacity-0 group-hover:opacity-100">
                       <Edit2 className="w-4 h-4" />
                     </button>
                   </div>
                 )) : (
-                  <p className="p-8 text-center text-xs text-gray-400 font-bold uppercase italic">No hay tipos registrados</p>
+                  <p className="p-12 text-center text-[10px] text-slate-600 font-black uppercase tracking-widest italic">No hay tipos</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* User Management */}
-          <div className="space-y-4 pt-4">
+          <div className="space-y-6 pt-6">
             <div className="flex items-center px-2">
-              <Users className="w-5 h-5 text-eveca-primary mr-2" />
-              <h3 className="font-bold text-gray-700">Control de Usuarios</h3>
+              <Users className="w-5 h-5 text-accent-blue mr-3" />
+              <h3 className="font-black text-white text-xs uppercase tracking-[0.25em]">Accesos</h3>
             </div>
-            <div className="bg-eveca-primary/5 border border-eveca-primary/10 p-6 rounded-2xl flex flex-col items-start justify-between gap-4 h-full">
+            <div className="bg-accent-blue/5 border border-accent-blue/10 p-8 rounded-[2rem] flex flex-col items-start justify-between gap-6 h-full shadow-inner">
               <div>
-                <p className="font-bold text-eveca-primary">Gestión de Accesos</p>
-                <p className="text-xs text-gray-500 mt-1">Configure los roles y apruebe nuevas solicitudes de personal.</p>
+                <p className="font-black text-white text-sm uppercase tracking-widest">Gestión de Perfiles</p>
+                <p className="text-[10px] text-slate-500 font-bold mt-2 leading-relaxed">Administre los permisos y aprobación de nuevos usuarios en la plataforma.</p>
               </div>
               <button 
                 onClick={() => onViewChange('access_control')}
-                className="w-full bg-white text-eveca-primary font-bold px-6 py-2.5 rounded-xl border border-eveca-primary/20 hover:bg-eveca-primary hover:text-white transition-all shadow-sm"
+                className="w-full bg-dark-card text-accent-blue font-black py-4 rounded-2xl border border-accent-blue/20 hover:bg-accent-blue hover:text-white transition-all shadow-xl shadow-black/20 text-[10px] uppercase tracking-widest"
               >
-                Gestionar Perfiles
+                Ir a Control de Usuarios
               </button>
             </div>
           </div>
 
           {/* Audit Log Entry */}
-          <div className="space-y-4 pt-4">
+          <div className="space-y-6 pt-6">
             <div className="flex items-center px-2">
-              <ListOrdered className="w-5 h-5 text-eveca-primary mr-2" />
-              <h3 className="font-bold text-gray-700">Trazabilidad</h3>
+              <ListOrdered className="w-5 h-5 text-accent-cyan mr-3" />
+              <h3 className="font-black text-white text-xs uppercase tracking-[0.25em]">Sistema</h3>
             </div>
-            <div className="bg-amber-50/50 border border-amber-100 p-6 rounded-2xl flex flex-col items-start justify-between gap-4 h-full">
+            <div className="bg-slate-800/10 border border-slate-800 p-8 rounded-[2rem] flex flex-col items-start justify-between gap-6 h-full shadow-inner">
               <div>
-                <p className="font-bold text-amber-700">Auditoría del Sistema</p>
-                <p className="text-xs text-gray-500 mt-1">Consulte el historial de acciones, modificaciones y eliminaciones de registros.</p>
+                <p className="font-black text-white text-sm uppercase tracking-widest">Logs de Actividad</p>
+                <p className="text-[10px] text-slate-500 font-bold mt-2 leading-relaxed">Bitácora completa de todas las acciones ejecutadas en el gestor documental.</p>
               </div>
               <button 
                 onClick={() => onViewChange('audit_log')}
-                className="w-full bg-white text-amber-700 font-bold px-6 py-2.5 rounded-xl border border-amber-100 hover:bg-amber-600 hover:text-white transition-all shadow-sm"
+                className="w-full bg-dark-card text-slate-400 font-black py-4 rounded-2xl border border-slate-800 hover:bg-slate-800 hover:text-white transition-all shadow-xl shadow-black/20 text-[10px] uppercase tracking-widest"
               >
                 Ver Bitácora de Logs
               </button>
@@ -353,95 +355,78 @@ export const AdminModule = ({
           </div>
 
           {/* Histórico de Consecutivos */}
-          <div className="col-span-1 lg:col-span-2 space-y-4 pt-8">
+          <div className="col-span-1 lg:col-span-2 space-y-6 pt-12">
             <div className="flex items-center justify-between px-2">
               <div className="flex items-center">
-                <ListOrdered className="w-5 h-5 text-eveca-primary mr-2" />
-                <h3 className="font-bold text-gray-700">Histórico de Últimos Consecutivos</h3>
+                <ListOrdered className="w-5 h-5 text-accent-purple mr-3" />
+                <h3 className="font-black text-white text-xs uppercase tracking-[0.25em]">Últimos Consecutivos</h3>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 {currentUserProfile?.rol === 'superadmin' && (
                   <button 
                     onClick={async () => {
-                      if (window.confirm('¿Está seguro de que desea vaciar el historial de consecutivos? Esto reiniciará todos los contadores a cero.')) {
+                      if (window.confirm('¿Está seguro de que desea vaciar el historial?')) {
                         try {
-                          // Usamos una función RPC para un borrado masivo seguro y sin errores de columna
                           const { error } = await supabase.rpc('vaciar_consecutivos');
-                          
-                          if (error) {
-                            // Si la función RPC no existe aún, intentamos el borrado directo como respaldo
-                            const { error: deleteError } = await supabase
-                              .from('consecutivos')
-                              .delete()
-                              .match({}); // Intento de borrado total
-                            
-                            if (deleteError) throw deleteError;
-                          }
-                          
-                          // Registramos la acción solo si el borrado fue exitoso
+                          if (error) throw error;
                           if (currentUserProfile) {
-                            logAccion(currentUserProfile.id, 'DELETE', 'consecutivos', 'TODO', { 
-                              accion: 'vaciar_historial',
-                              resultado: 'exito'
-                            });
+                            logAccion(currentUserProfile.id, 'DELETE', 'consecutivos', 'TODO', { accion: 'vaciar_historial' });
                           }
-                          
                           await fetchConsecutivos();
-                          alert('Historial de consecutivos vaciado correctamente. Los contadores han vuelto a cero.');
+                          alert('Historial vaciado.');
                         } catch (err: any) {
-                          console.error('Error detallado al vaciar:', err);
-                          alert(`No se pudo vaciar el historial: ${err.message || 'Error de conexión'}. Verifique que haya ejecutado el script SQL actualizado.`);
+                          alert(`Error: ${err.message}`);
                         }
                       }
                     }}
-                    className="text-[10px] font-bold text-red-600 hover:underline uppercase"
+                    className="text-[10px] font-black text-rose-500 hover:text-rose-400 uppercase tracking-widest transition-colors"
                   >
                     Vaciar Historial
                   </button>
                 )}
                 <button 
                   onClick={fetchConsecutivos}
-                  className="text-[10px] font-bold text-eveca-primary hover:underline uppercase"
+                  className="text-[10px] font-black text-accent-purple hover:text-white uppercase tracking-widest transition-colors"
                 >
                   Actualizar Vista
                 </button>
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+            <div className="bg-dark-card rounded-[2.5rem] border border-slate-800/50 overflow-hidden shadow-2xl">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">
-                  <tr>
-                    <th className="px-6 py-3">Proceso</th>
-                    <th className="px-6 py-3">Tipo</th>
-                    <th className="px-6 py-3">Último Número</th>
-                    <th className="px-6 py-3">Último Código Generado</th>
+                <thead>
+                  <tr className="bg-slate-800/20 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    <th className="px-10 py-6">Proceso</th>
+                    <th className="px-10 py-6">Tipo</th>
+                    <th className="px-10 py-6">Contador</th>
+                    <th className="px-10 py-6 text-right">Último Código</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-slate-800/50">
                   {loadingConsecutivos ? (
                     <tr>
-                      <td colSpan={4} className="px-6 py-8 text-center">
-                        <Loader2 className="w-5 h-5 text-eveca-primary animate-spin mx-auto" />
+                      <td colSpan={4} className="px-10 py-12 text-center">
+                        <Loader2 className="w-6 h-6 text-accent-purple animate-spin mx-auto" />
                       </td>
                     </tr>
                   ) : consecutivos.length > 0 ? consecutivos.map((item: any, idx: number) => (
-                    <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-bold text-gray-700">{item.proceso}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{item.tipo}</td>
-                      <td className="px-6 py-4">
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-lg">
+                    <tr key={idx} className="hover:bg-slate-800/30 transition-all">
+                      <td className="px-10 py-8 text-sm font-black text-white tracking-tight">{item.proceso}</td>
+                      <td className="px-10 py-8 text-xs font-bold text-slate-500">{item.tipo}</td>
+                      <td className="px-10 py-8">
+                        <span className="px-3 py-1 bg-slate-800 text-slate-400 text-[10px] font-black rounded-lg uppercase tracking-widest">
                           #{item.ultimo_consecutivo.toString().padStart(3, '0')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm font-mono font-bold text-eveca-primary">
+                      <td className="px-10 py-8 text-xs font-black text-accent-purple tracking-widest text-right">
                         {item.ultimo_codigo}
                       </td>
                     </tr>
                   )) : (
                     <tr>
-                      <td colSpan={4} className="px-6 py-8 text-center text-xs text-gray-400 font-bold uppercase italic">
-                        No hay consecutivos registrados en la base de datos
+                      <td colSpan={4} className="px-10 py-12 text-center text-[10px] text-slate-600 font-black uppercase tracking-widest italic">
+                        Sin registros
                       </td>
                     </tr>
                   )}

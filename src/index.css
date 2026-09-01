@@ -1,16 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --color-eveca-primary: #1B4332; /* Dark green from logo */
-  --color-eveca-accent: #D4A373; /* Earthy tone from logo */
-  --color-eveca-oil: #FFB703; /* Oil drop yellow */
-  --color-eveca-red: #C1121F; /* Red line detail */
-  --color-eveca-green-light: #2D6A4F;
-  --color-eveca-bg: #F8F9FA;
+  --color-dark-bg: #0f1115;
+  --color-dark-card: #1a1d23;
+  --color-accent-purple: #d946ef;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-blue: #3b82f6;
+  
+  --color-eveca-primary: #d946ef; /* Changed to accent purple for consistency */
+  --color-eveca-accent: #22d3ee;
+  --color-eveca-oil: #FFB703;
+  --color-eveca-red: #f43f5e;
+  --color-eveca-green-light: #2dd4bf;
+  --color-eveca-bg: #0f1115;
 }
 
 @layer base {
   body {
-    @apply bg-eveca-bg text-gray-900 antialiased;
+    @apply bg-dark-bg text-slate-200 antialiased;
+  }
+  
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-bg;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
   }
 }

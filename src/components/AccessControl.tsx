@@ -66,100 +66,102 @@ export const AccessControl = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="space-y-10">
+      <div className="bg-dark-card p-10 rounded-[2.5rem] border border-slate-800/50 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent-blue/5 rounded-full -mr-20 -mt-20 blur-3xl" />
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
           <div className="flex items-center">
-            <div className="bg-eveca-primary/10 p-3 rounded-2xl mr-4">
-              <Users className="w-6 h-6 text-eveca-primary" />
+            <div className="bg-accent-blue/10 p-5 rounded-3xl mr-6 border border-accent-blue/20 shadow-inner">
+              <Users className="w-8 h-8 text-accent-blue" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-800">Control de Accesos</h2>
-              <p className="text-sm text-gray-500">Gestione las aprobaciones y roles de los usuarios del sistema.</p>
+              <h2 className="text-2xl font-black text-white tracking-tight">Control de Accesos</h2>
+              <p className="text-xs text-slate-500 font-bold mt-1 uppercase tracking-widest">Gestión de permisos y validación de personal</p>
             </div>
           </div>
           
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input 
               type="text" 
               placeholder="Buscar por nombre o correo..."
-              className="w-full bg-gray-50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-1 focus:ring-eveca-primary outline-none"
+              className="w-full bg-slate-800/30 border border-slate-800/50 rounded-2xl py-3.5 pl-12 pr-6 text-sm text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-blue/50 outline-none transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="mt-12 overflow-x-auto relative z-10">
           <table className="w-full">
             <thead>
-              <tr className="text-left border-b border-gray-50">
-                <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Usuario</th>
-                <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Estado</th>
-                <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase">Rol Actual</th>
-                <th className="px-4 py-4 text-xs font-bold text-gray-400 uppercase text-right">Acciones</th>
+              <tr className="text-left border-b border-slate-800/50">
+                <th className="px-6 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Usuario</th>
+                <th className="px-6 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Estado</th>
+                <th className="px-6 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Rol Actual</th>
+                <th className="px-6 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-slate-800/50">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-4 py-4">
+                <tr key={user.id} className="hover:bg-slate-800/30 transition-all group">
+                  <td className="px-6 py-8">
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-gray-700">{user.nombre_completo || 'Sin nombre'}</span>
-                      <span className="text-xs text-gray-500">{user.email}</span>
+                      <span className="text-sm font-black text-white tracking-tight group-hover:text-accent-blue transition-colors">{user.nombre_completo || 'Sin nombre'}</span>
+                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{user.email}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="px-6 py-8">
                     <span className={cn(
-                      "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
-                      user.estado === 'aprobado' ? "bg-green-50 text-green-700 border-green-100" :
-                      user.estado === 'rechazado' ? "bg-red-50 text-red-700 border-red-100" :
-                      "bg-amber-50 text-amber-700 border-amber-100"
+                      "px-4 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest border shadow-lg shadow-black/20",
+                      user.estado === 'aprobado' ? "bg-accent-purple/10 text-accent-purple border-accent-purple/20" :
+                      user.estado === 'rechazado' ? "bg-rose-500/10 text-rose-500 border-rose-500/20" :
+                      "bg-amber-500/10 text-amber-500 border-amber-500/20"
                     )}>
                       {user.estado}
                     </span>
                   </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center text-xs font-medium text-gray-600">
-                      <Shield className="w-3.5 h-3.5 mr-1.5 text-gray-400" />
+                  <td className="px-6 py-8">
+                    <div className="flex items-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <Shield className="w-4 h-4 mr-3 text-slate-700" />
                       <span className="capitalize">{user.rol.replace('_', ' ')}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-right">
-                    <div className="flex items-center justify-end space-x-2">
+                  <td className="px-6 py-8 text-right">
+                    <div className="flex items-center justify-end space-x-3">
                       {user.estado === 'pendiente' ? (
                         <>
-                          <div className="flex bg-gray-50 p-1 rounded-lg border border-gray-100">
+                          <div className="flex bg-slate-800/50 p-1.5 rounded-2xl border border-slate-800 shadow-inner">
                             <button 
                               disabled={processingId === user.id}
                               onClick={() => handleAction(user.id, 'aprobado', 'editor')}
-                              className="px-3 py-1.5 text-[10px] font-bold text-eveca-primary hover:bg-white rounded-md transition-all flex items-center"
+                              className="px-4 py-2 text-[10px] font-black text-accent-blue hover:bg-dark-card rounded-xl transition-all uppercase tracking-widest"
                             >
-                              Aprobar Editor
+                              Editor
                             </button>
                             <button 
                               disabled={processingId === user.id}
                               onClick={() => handleAction(user.id, 'aprobado', 'visualizador')}
-                              className="px-3 py-1.5 text-[10px] font-bold text-gray-500 hover:bg-white rounded-md transition-all flex items-center"
+                              className="px-4 py-2 text-[10px] font-black text-slate-500 hover:bg-dark-card hover:text-white rounded-xl transition-all uppercase tracking-widest"
                             >
-                              Aprobar Lector
+                              Lector
                             </button>
                           </div>
                           <button 
                             disabled={processingId === user.id}
                             onClick={() => handleAction(user.id, 'rechazado')}
-                            className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-3 text-rose-500 hover:text-white hover:bg-rose-500/10 rounded-xl transition-all"
                             title="Rechazar"
                           >
                             <XCircle className="w-5 h-5" />
                           </button>
                         </>
                       ) : (
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
                           <select 
                             disabled={processingId === user.id}
-                            className="bg-gray-50 border-none rounded-lg py-1.5 pl-3 pr-8 text-[10px] font-bold text-gray-600 focus:ring-1 focus:ring-eveca-primary outline-none"
+                            className="bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest focus:ring-1 focus:ring-accent-blue outline-none transition-all"
                             value={user.rol}
                             onChange={(e) => handleAction(user.id, 'aprobado', e.target.value as UserRole)}
                           >
@@ -171,14 +173,14 @@ export const AccessControl = () => {
                           <button 
                             disabled={processingId === user.id}
                             onClick={() => handleAction(user.id, 'rechazado')}
-                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-2.5 text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
                             title="Revocar Acceso"
                           >
                             <XCircle className="w-4 h-4" />
                           </button>
                         </div>
                       )}
-                      {processingId === user.id && <Loader2 className="w-4 h-4 text-eveca-primary animate-spin" />}
+                      {processingId === user.id && <Loader2 className="w-5 h-5 text-accent-blue animate-spin ml-2" />}
                     </div>
                   </td>
                 </tr>

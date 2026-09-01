@@ -75,53 +75,53 @@ export const ApprovedRepository = ({
   }, [documents, selectedProcess, searchTerm]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Header Info */}
-      <div className="bg-eveca-primary text-white p-8 rounded-3xl relative overflow-hidden shadow-lg border-b-4 border-eveca-oil">
+      <div className="bg-dark-card p-10 rounded-[2.5rem] border border-slate-800/50 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-accent-cyan/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+        
         <div className="relative z-10">
-          <div className="flex items-center mb-4">
-            <div className="bg-white/20 p-2 rounded-lg mr-4">
-              <BookOpen className="w-6 h-6 text-white" />
+          <div className="flex items-center mb-6">
+            <div className="bg-accent-cyan/10 p-5 rounded-3xl mr-6 border border-accent-cyan/20 shadow-inner">
+              <BookOpen className="w-8 h-8 text-accent-cyan" />
             </div>
-            <h2 className="text-2xl font-bold">Repositorio de Documentación Aprobada</h2>
+            <h2 className="text-3xl font-black text-white tracking-tight">Repositorio Maestro</h2>
           </div>
-          <p className="text-eveca-bg/80 max-w-2xl text-sm leading-relaxed">
-            Consulte aquí únicamente los documentos aprobados por la Jefatura de Sostenibilidad. 
-            Este módulo es de solo lectura para asegurar la integridad de la información.
+          <p className="text-xs text-slate-500 font-bold max-w-2xl uppercase tracking-widest leading-loose">
+            Consulte únicamente los documentos aprobados y vigentes. 
+            Este módulo es de solo lectura para asegurar la integridad normativa de la organización.
           </p>
         </div>
-        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="absolute right-10 top-10 w-20 h-20 bg-eveca-oil/10 rounded-full blur-xl"></div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-10">
         {/* Error Message Toast-like */}
         {errorMessage && (
-          <div className="fixed top-24 right-8 z-[60] bg-white border-l-4 border-red-500 shadow-2xl rounded-xl p-4 flex items-start animate-in slide-in-from-right-8 max-w-sm">
-            <AlertCircle className="w-5 h-5 text-red-500 mr-3 shrink-0" />
-            <div className="flex-1 mr-4">
-              <p className="text-xs font-bold text-gray-800">Atención</p>
-              <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed">{errorMessage}</p>
+          <div className="fixed top-24 right-10 z-[60] bg-dark-card border border-rose-500/30 shadow-2xl rounded-[2rem] p-6 flex items-start animate-in slide-in-from-right-10 max-w-sm">
+            <AlertCircle className="w-6 h-6 text-rose-500 mr-4 shrink-0" />
+            <div className="flex-1 mr-6">
+              <p className="text-[10px] font-black text-white uppercase tracking-widest">Atención</p>
+              <p className="text-[10px] text-slate-500 font-bold mt-2 leading-relaxed">{errorMessage}</p>
             </div>
-            <button onClick={() => setErrorMessage(null)} className="text-gray-400 hover:text-gray-600">
+            <button onClick={() => setErrorMessage(null)} className="text-slate-600 hover:text-white transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>
         )}
 
         {/* Navigation Sidebar (Processes) */}
-        <div className="lg:w-64 space-y-2">
-          <p className="px-4 mb-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Navegar por Proceso</p>
+        <div className="lg:w-72 space-y-3">
+          <p className="px-6 mb-6 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Navegar Procesos</p>
           <button 
             onClick={() => setSelectedProcess('all')}
             className={cn(
-              "w-full flex items-center p-3 rounded-xl transition-all font-bold text-sm",
+              "w-full flex items-center p-4 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest border",
               selectedProcess === 'all' 
-                ? "bg-white text-eveca-primary shadow-sm ring-1 ring-gray-100" 
-                : "text-gray-500 hover:bg-gray-50"
+                ? "bg-accent-cyan/10 text-accent-cyan border-accent-cyan/20 shadow-xl shadow-accent-cyan/5" 
+                : "text-slate-500 border-transparent hover:bg-slate-800/50 hover:text-slate-300"
             )}
           >
-            <Folder className={cn("w-4 h-4 mr-3", selectedProcess === 'all' ? "text-eveca-primary" : "text-gray-400")} />
+            <Folder className={cn("w-4 h-4 mr-4", selectedProcess === 'all' ? "text-accent-cyan" : "text-slate-700")} />
             Todos los procesos
           </button>
           {processes.map(p => (
@@ -129,18 +129,21 @@ export const ApprovedRepository = ({
               key={p.id}
               onClick={() => setSelectedProcess(p.id)}
               className={cn(
-                "w-full flex items-center p-3 rounded-xl transition-all font-bold text-sm",
+                "w-full flex items-center p-4 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest border",
                 selectedProcess === p.id 
-                  ? "bg-white text-eveca-primary shadow-sm ring-1 ring-gray-100" 
-                  : "text-gray-500 hover:bg-gray-50"
+                  ? "bg-accent-cyan/10 text-accent-cyan border-accent-cyan/20 shadow-xl shadow-accent-cyan/5" 
+                  : "text-slate-500 border-transparent hover:bg-slate-800/50 hover:text-slate-300"
               )}
             >
               <div className={cn(
-                "w-1.5 h-1.5 rounded-full mr-3 transition-all",
-                selectedProcess === p.id ? "bg-eveca-primary scale-125" : "bg-gray-300"
+                "w-1.5 h-1.5 rounded-full mr-4 transition-all",
+                selectedProcess === p.id ? "bg-accent-cyan scale-150 shadow-[0_0_8px_rgba(34,211,238,0.5)]" : "bg-slate-800"
               )} />
-              {p.nombre}
-              <span className="ml-auto text-[10px] text-gray-400 font-bold">
+              <span className="truncate flex-1 text-left">{p.nombre}</span>
+              <span className={cn(
+                "ml-3 px-2 py-0.5 rounded-lg text-[10px] font-black transition-all",
+                selectedProcess === p.id ? "bg-accent-cyan text-dark-bg" : "bg-slate-800 text-slate-600"
+              )}>
                 {documents.filter(d => d.proceso_id === p.id && d.estado === 'Aprobado').length}
               </span>
             </button>
@@ -148,56 +151,59 @@ export const ApprovedRepository = ({
         </div>
 
         {/* Results Grid */}
-        <div className="flex-1 space-y-6">
+        <div className="flex-1 space-y-10">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input 
               type="text" 
-              placeholder="Buscar documento aprobado por nombre o código..." 
-              className="w-full bg-white border border-gray-200 rounded-2xl py-4 pl-12 pr-6 shadow-sm focus:ring-2 focus:ring-eveca-primary outline-none transition-all"
+              placeholder="Buscar por nombre o código..." 
+              className="w-full bg-dark-card border border-slate-800/50 rounded-[2rem] py-5 pl-14 pr-8 text-white placeholder:text-slate-600 shadow-2xl focus:ring-2 focus:ring-accent-cyan/50 outline-none transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {approvedDocs.length > 0 ? (
               approvedDocs.map(doc => (
-                <div key={doc.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group flex flex-col">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="bg-gray-50 p-3 rounded-xl group-hover:bg-eveca-primary/5 transition-colors">
-                      <FileUp className="w-6 h-6 text-eveca-primary" />
+                <div key={doc.id} className="bg-dark-card p-8 rounded-[2.5rem] border border-slate-800/50 shadow-2xl hover:border-accent-cyan/30 transition-all group flex flex-col relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="bg-slate-800/50 p-4 rounded-2xl group-hover:bg-accent-cyan/10 group-hover:scale-110 transition-all border border-slate-800">
+                      <FileUp className="w-7 h-7 text-accent-cyan" />
                     </div>
-                    <span className="text-[10px] font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md uppercase tracking-wider">
+                    <span className="px-3 py-1 bg-slate-800 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-widest border border-slate-700">
                       {types.find(t => t.id === doc.tipo_id)?.abreviatura}
                     </span>
                   </div>
-                  <h4 className="text-sm font-bold text-gray-800 mb-1 group-hover:text-eveca-primary transition-colors">{doc.nombre}</h4>
-                  <p className="text-xs font-bold text-eveca-primary mb-4">{doc.codigo}</p>
                   
-                  <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
+                  <h4 className="text-base font-black text-white tracking-tight mb-2 group-hover:text-accent-cyan transition-colors">{doc.nombre}</h4>
+                  <p className="text-[10px] font-black text-accent-cyan tracking-[0.2em] uppercase mb-6">{doc.codigo}</p>
+                  
+                  <div className="mt-auto pt-6 border-t border-slate-800/50 flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase">Estado Actual</span>
-                      <span className="text-xs font-bold text-gray-600">v{doc.version} - {doc.estado}</span>
+                      <span className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Vigencia</span>
+                      <span className="text-xs font-black text-slate-400 uppercase tracking-widest">v{doc.version}.0</span>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-3">
                       <button 
                         onClick={() => handlePreview(doc.archivo_url)}
-                        className="p-2 text-gray-400 hover:text-eveca-primary hover:bg-gray-50 rounded-lg transition-all" 
-                        title="Vista previa rápida"
+                        className="p-3 text-slate-500 hover:text-white hover:bg-slate-800 rounded-xl transition-all" 
+                        title="Vista rápida"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-5 h-5" />
                       </button>
                       <button 
                         onClick={() => handleDownload(doc)}
                         disabled={isDownloading === doc.id}
-                        className="p-2 text-white bg-eveca-primary hover:bg-eveca-green-light rounded-lg transition-all shadow-sm disabled:opacity-50"
+                        className="p-3 text-white bg-accent-cyan hover:bg-white hover:text-dark-bg rounded-xl transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-30 group-hover:scale-110"
                         title="Descargar copia controlada"
                       >
                         {isDownloading === doc.id ? (
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
-                          <Download className="w-4 h-4" />
+                          <Download className="w-5 h-5" />
                         )}
                       </button>
                     </div>
@@ -205,10 +211,10 @@ export const ApprovedRepository = ({
                 </div>
               ))
             ) : (
-              <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-400 bg-white rounded-3xl border border-dashed border-gray-200">
-                <Search className="w-12 h-12 mb-4 opacity-20" />
-                <p className="font-bold">No se encontraron documentos vigentes</p>
-                <p className="text-xs mt-1">Intente con otros términos o filtros de proceso</p>
+              <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-600 bg-slate-800/10 rounded-[3rem] border border-dashed border-slate-800">
+                <Search className="w-16 h-16 mb-6 opacity-10" />
+                <p className="font-black text-xs uppercase tracking-[0.2em]">No se encontraron documentos</p>
+                <p className="text-[10px] mt-2 font-bold opacity-50">Intente ajustar los términos de búsqueda</p>
               </div>
             )}
           </div>

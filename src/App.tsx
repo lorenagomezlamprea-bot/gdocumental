@@ -228,8 +228,13 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-eveca-bg">
-        <Loader2 className="w-8 h-8 text-eveca-primary animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-accent-purple/20 border-t-accent-purple rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 bg-dark-bg rounded-full border border-slate-800" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -237,50 +242,53 @@ export default function App() {
   if (!session) {
     if (authView === 'login') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-eveca-bg p-4">
-          <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="p-8 bg-eveca-primary text-white text-center">
-              <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm overflow-hidden p-2">
+        <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-[50rem] h-[50rem] bg-accent-purple/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-[50rem] h-[50rem] bg-accent-blue/5 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
+          
+          <div className="max-w-md w-full bg-dark-card rounded-[2.5rem] shadow-2xl border border-slate-800 overflow-hidden relative z-10">
+            <div className="p-10 bg-gradient-to-br from-accent-purple to-accent-blue text-white text-center relative">
+              <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl p-4 transition-transform hover:scale-105 duration-500">
                 <img src="/Logo_corpo-1.png" alt="EVECA Logo" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">Gestor Documental</h1>
-              <p className="text-white/60 text-sm mt-2">Área de Sostenibilidad</p>
+              <h1 className="text-3xl font-black tracking-tighter">EVECA</h1>
+              <p className="text-white/80 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Gestor Documental</p>
             </div>
-            <form onSubmit={handleLogin} className="p-8 space-y-6">
+            <form onSubmit={handleLogin} className="p-10 space-y-6">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Correo Electrónico</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Correo Electrónico</label>
                 <input 
                   name="email"
                   type="email" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-3 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-purple transition-all outline-none"
                   placeholder="usuario@eveca.com"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Contraseña</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Contraseña</label>
                 <input 
                   name="password"
                   type="password" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-3 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-purple transition-all outline-none"
                   placeholder="••••••••"
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full bg-eveca-primary text-white font-bold py-4 rounded-xl hover:bg-eveca-green-light transition-all shadow-lg shadow-eveca-primary/20"
+                className="w-full bg-white text-dark-bg font-black py-4 rounded-2xl hover:bg-accent-purple hover:text-white transition-all shadow-xl shadow-black/20 uppercase tracking-widest text-xs"
               >
                 Iniciar Sesión
               </button>
               
-              <div className="text-center pt-2">
-                <p className="text-sm text-gray-400">
+              <div className="text-center pt-4">
+                <p className="text-xs text-slate-500 font-bold">
                   ¿No tienes cuenta?{' '}
                   <button 
                     type="button"
                     onClick={() => setAuthView('request')}
-                    className="text-eveca-primary font-bold hover:underline"
+                    className="text-accent-purple font-black hover:underline ml-1"
                   >
                     Solicitar acceso
                   </button>
@@ -294,68 +302,70 @@ export default function App() {
 
     if (authView === 'request') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-eveca-bg p-4">
-          <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="p-8 bg-eveca-primary text-white text-center">
-              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm overflow-hidden p-2">
+        <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-[50rem] h-[50rem] bg-accent-blue/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
+          
+          <div className="max-w-md w-full bg-dark-card rounded-[2.5rem] shadow-2xl border border-slate-800 overflow-hidden relative z-10">
+            <div className="p-10 bg-gradient-to-br from-accent-blue to-accent-cyan text-white text-center">
+              <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl p-4 transition-transform hover:scale-105">
                 <img src="/Logo_corpo-1.png" alt="EVECA Logo" className="w-full h-full object-contain" />
               </div>
-              <h1 className="text-2xl font-bold">Solicitar Acceso</h1>
-              <p className="text-white/60 text-sm mt-2">Crea tu cuenta para el Área de Sostenibilidad</p>
+              <h1 className="text-3xl font-black tracking-tighter">Solicitar Acceso</h1>
+              <p className="text-white/80 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Área de Sostenibilidad</p>
             </div>
-            <form onSubmit={handleSignUp} className="p-8 space-y-4">
+            <form onSubmit={handleSignUp} className="p-10 space-y-6">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Nombre Completo</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Nombre Completo</label>
                 <input 
                   name="nombre_completo"
                   type="text" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-blue transition-all outline-none"
                   placeholder="Ej: Juan Pérez"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Correo Electrónico</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Correo Electrónico</label>
                 <input 
                   name="email"
                   type="email" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-blue transition-all outline-none"
                   placeholder="usuario@eveca.com"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Contraseña</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Contraseña</label>
                 <input 
                   name="password"
                   type="password" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-blue transition-all outline-none"
                   placeholder="••••••••"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Confirmar Contraseña</label>
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 ml-1">Confirmar Contraseña</label>
                 <input 
                   name="confirm_password"
                   type="password" 
                   required
-                  className="w-full bg-gray-50 border-gray-100 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-eveca-primary transition-all outline-none"
+                  className="w-full bg-slate-800/30 border border-slate-800 rounded-2xl py-4 px-6 text-white placeholder:text-slate-600 focus:ring-2 focus:ring-accent-blue transition-all outline-none"
                   placeholder="••••••••"
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full bg-eveca-primary text-white font-bold py-4 rounded-xl hover:bg-eveca-green-light transition-all shadow-lg shadow-eveca-primary/20 mt-4"
+                className="w-full bg-white text-dark-bg font-black py-4 rounded-2xl hover:bg-accent-blue hover:text-white transition-all shadow-xl shadow-black/20 uppercase tracking-widest text-xs"
               >
                 Enviar Solicitud
               </button>
               
-              <div className="text-center pt-2">
+              <div className="text-center pt-4">
                 <button 
                   type="button"
                   onClick={() => setAuthView('login')}
-                  className="text-sm text-gray-400 hover:text-eveca-primary font-bold"
+                  className="text-xs text-slate-500 font-bold hover:text-accent-blue transition-colors"
                 >
                   Volver al Inicio de Sesión
                 </button>
@@ -368,21 +378,23 @@ export default function App() {
 
     if (authView === 'success') {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-eveca-bg p-4">
-          <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="p-12 text-center">
-              <div className="w-20 h-20 bg-green-50 text-green-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+        <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-accent-purple/5 animate-pulse" />
+          
+          <div className="max-w-md w-full bg-dark-card rounded-[3rem] shadow-2xl border border-slate-800 overflow-hidden relative z-10">
+            <div className="p-16 text-center">
+              <div className="w-24 h-24 bg-accent-purple/10 text-accent-purple rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner border border-accent-purple/20">
                 <Clock className="w-10 h-10" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-4">Solicitud Enviada</h1>
-              <p className="text-gray-500 mb-8 px-4">
-                Tu solicitud de acceso fue enviada correctamente. La Jefatura de Sostenibilidad revisará tu solicitud y te notificaremos cuando sea aprobada.
+              <h1 className="text-3xl font-black text-white mb-4 tracking-tight">Solicitud Enviada</h1>
+              <p className="text-slate-500 text-xs font-bold leading-relaxed mb-10 px-4 uppercase tracking-widest">
+                Tu solicitud está en revisión. La Jefatura de Sostenibilidad validará tus credenciales en las próximas horas.
               </p>
               <button 
                 onClick={() => setAuthView('login')}
-                className="w-full bg-eveca-primary text-white font-bold py-4 rounded-xl hover:bg-eveca-green-light transition-all shadow-lg"
+                className="w-full bg-accent-purple text-white font-black py-5 rounded-2xl hover:bg-white hover:text-dark-bg transition-all shadow-xl shadow-accent-purple/20 uppercase tracking-[0.2em] text-xs"
               >
-                Volver al Login
+                Regresar al Inicio
               </button>
             </div>
           </div>
@@ -488,7 +500,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex min-h-screen bg-eveca-bg">
+    <div className="flex min-h-screen bg-dark-bg">
       <Sidebar 
         currentView={currentView} 
         onViewChange={setCurrentView} 
@@ -507,18 +519,18 @@ export default function App() {
           onViewChange={setCurrentView}
         />
         
-        <div className="flex-1 p-8 overflow-y-auto">
-          <div className="max-w-7xl mx-auto animate-in fade-in duration-500">
+        <div className="flex-1 p-10 overflow-y-auto">
+          <div className="max-w-7xl mx-auto animate-in fade-in duration-700">
             {renderContent()}
           </div>
         </div>
         
-        <footer className="py-6 px-8 border-t border-gray-200 bg-white">
-          <div className="flex justify-between items-center text-gray-400 text-[10px] font-bold uppercase tracking-widest">
-            <p>© 2026 EVECA - Extracción Sostenible de Aceite de Palma</p>
-            <div className="flex space-x-4">
-              <span>Versión del Sistema 1.1.0</span>
-              <span className="text-eveca-primary cursor-pointer hover:underline">Soporte Técnico</span>
+        <footer className="py-10 px-10 border-t border-slate-800/50 bg-dark-bg">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">
+            <p>© 2026 EVECA - EXTRACTORA DE ACEITE DE PALMA</p>
+            <div className="flex items-center space-x-8">
+              <span>SISTEMA DE GESTIÓN v1.2.0</span>
+              <span className="text-accent-purple cursor-pointer hover:text-white transition-colors">SOPORTE TÉCNICO</span>
             </div>
           </div>
         </footer>

@@ -114,3 +114,7 @@ BEGIN
   END IF;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Otorgar permisos de ejecución a usuarios autenticados
+GRANT EXECUTE ON FUNCTION vaciar_consecutivos() TO authenticated;
+GRANT EXECUTE ON FUNCTION vaciar_consecutivos() TO service_role;
