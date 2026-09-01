@@ -7,7 +7,8 @@ import {
   BookOpen,
   Download,
   AlertCircle,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { cn, formatDate } from '../lib/utils';
 import { Documento, Proceso, TipoDocumento, UserProfile } from '../types';

@@ -226,6 +226,8 @@ export default function App() {
     await supabase.auth.signOut();
   };
 
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-bg">
@@ -530,10 +532,60 @@ export default function App() {
             <p>© 2026 EVECA - EXTRACTORA DE ACEITE DE PALMA</p>
             <div className="flex items-center space-x-8">
               <span>SISTEMA DE GESTIÓN v1.2.0</span>
-              <span className="text-accent-purple cursor-pointer hover:text-white transition-colors">SOPORTE TÉCNICO</span>
+              <span 
+                onClick={() => setIsSupportModalOpen(true)}
+                className="text-accent-purple cursor-pointer hover:text-white transition-colors"
+              >
+                SOPORTE TÉCNICO
+              </span>
             </div>
           </div>
         </footer>
+
+        {/* Support Modal */}
+        {isSupportModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark-bg/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="max-w-sm w-full bg-dark-card rounded-[2.5rem] border border-slate-800 shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full -mr-16 -mt-16 blur-2xl" />
+              
+              <div className="p-10 text-center">
+                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl p-4 border border-slate-800/10">
+                  <img src="/Logo_corpo-1.png" alt="EVECA Logo" className="w-full h-full object-contain" />
+                </div>
+                
+                <h3 className="text-lg font-black text-white tracking-tight mb-2">Soporte Técnico</h3>
+                <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mb-8">Gestor Documental EVECA</p>
+                
+                <div className="space-y-6 text-left bg-slate-800/30 p-6 rounded-2xl border border-slate-800/50">
+                  <p className="text-xs text-slate-400 font-bold leading-relaxed">
+                    Para cualquier duda o inconveniente técnico relacionado con el sistema:
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">Creador</p>
+                      <p className="text-sm font-black text-white tracking-tight">William Martinez</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">Contacto de Soporte</p>
+                      <a href="mailto:sostenibilidad@eveca.co" className="text-sm font-black text-accent-purple hover:text-white transition-colors">
+                        sostenibilidad@eveca.co
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => setIsSupportModalOpen(false)}
+                  className="w-full mt-8 bg-slate-800 text-white font-black py-4 rounded-2xl hover:bg-white hover:text-dark-bg transition-all uppercase tracking-widest text-[10px] border border-slate-700"
+                >
+                  Entendido
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
