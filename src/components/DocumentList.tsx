@@ -47,7 +47,9 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
     tipo_id: '',
     proceso_id: '',
     responsable: '',
-    observaciones: ''
+    observaciones: '',
+    codigoManual: '',
+    usarCodigoManual: false
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [codePreview, setCodePreview] = useState<string>('');
@@ -288,36 +290,72 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
     setCreationError(null);
     let codigoGenerated = '';
 
-    // PASO 1: Generar código vía RPC
-    try {
-      const { data: codigo, error: codeError } = await supabase.rpc('generar_codigo_documento', { 
-        p_proceso_id: newDoc.proceso_id, 
-        p_tipo_id: newDoc.tipo_id 
-      });
-
-      if (codeError) {
-        const msg = `Error al generar el código: ${codeError.message}`;
+    // PASO 1: Obtener o generar código
+    if (newDoc.usarCodigoManual) {
+      if (!newDoc.codigoManual.trim()) {
+        const msg = 'Debe ingresar un código válido.';
         setCreationError(msg);
         alert(msg);
         setIsSubmitting(false);
         return;
       }
       
-      if (!codigo) {
-        const msg = 'Error: El sistema no pudo generar un código para este documento.';
+      // Verificar si el código ya existe
+      const { data: existing, error: checkError } = await supabase
+        .from('documentos')
+        .select('codigo')
+        .eq('codigo', newDoc.codigoManual.trim().toUpperCase())
+        .maybeSingle();
+      
+      if (checkError) {
+        const msg = `Error al verificar duplicidad: ${checkError.message}`;
         setCreationError(msg);
         alert(msg);
         setIsSubmitting(false);
         return;
       }
 
-      codigoGenerated = codigo;
-    } catch (err: any) {
-      const msg = `Excepción al generar código: ${err.message}`;
-      setCreationError(msg);
-      alert(msg);
-      setIsSubmitting(false);
-      return;
+      if (existing) {
+        const msg = `El código "${newDoc.codigoManual.toUpperCase()}" ya está en uso. Por favor ingrese un código diferente.`;
+        setCreationError(msg);
+        alert(msg);
+        setIsSubmitting(false);
+        return;
+      }
+
+      codigoGenerated = newDoc.codigoManual.trim().toUpperCase();
+    } else {
+      // Generar código vía RPC
+      try {
+        const { data: codigo, error: codeError } = await supabase.rpc('generar_codigo_documento', { 
+          p_proceso_id: newDoc.proceso_id, 
+          p_tipo_id: newDoc.tipo_id 
+        });
+
+        if (codeError) {
+          const msg = `Error al generar el código: ${codeError.message}`;
+          setCreationError(msg);
+          alert(msg);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        if (!codigo) {
+          const msg = 'Error: El sistema no pudo generar un código para este documento.';
+          setCreationError(msg);
+          alert(msg);
+          setIsSubmitting(false);
+          return;
+        }
+
+        codigoGenerated = codigo;
+      } catch (err: any) {
+        const msg = `Excepción al generar código: ${err.message}`;
+        setCreationError(msg);
+        alert(msg);
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     // PASO 2: Subida de archivo a Storage
@@ -380,7 +418,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
       // Éxito total
       setIsModalOpen(false);
       onRefresh();
-      setNewDoc({ nombre: '', tipo_id: '', proceso_id: '', responsable: '', observaciones: '' });
+      setNewDoc({ nombre: '', tipo_id: '', proceso_id: '', responsable: '', observaciones: '', codigoManual: '', usarCodigoManual: false });
       setSelectedFile(null);
     } catch (err: any) {
       const msg = `Excepción al guardar en base de datos: ${err.message}`;
@@ -676,15 +714,47 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                   </select>
                 </div>
 
-                {/* Code Preview Section */}
-                <div className="col-span-2 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Previsualización del Código</p>
-                  <p className={cn(
-                    "text-sm font-bold",
-                    codePreview ? "text-eveca-primary" : "text-gray-300 italic"
-                  )}>
-                    {codePreview ? `Código que se asignará: ${codePreview}` : "Seleccione proceso y tipo para ver el código"}
-                  </p>
+                <div className="col-span-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-xs font-bold text-gray-400 uppercase">Código del Documento</label>
+                    <label className="flex items-center cursor-pointer group">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only"
+                        checked={newDoc.usarCodigoManual}
+                        onChange={e => setNewDoc({...newDoc, usarCodigoManual: e.target.checked})}
+                      />
+                      <div className={cn(
+                        "w-8 h-4 rounded-full transition-colors relative mr-2",
+                        newDoc.usarCodigoManual ? "bg-eveca-primary" : "bg-gray-200"
+                      )}>
+                        <div className={cn(
+                          "absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full transition-transform",
+                          newDoc.usarCodigoManual && "translate-x-4"
+                        )}></div>
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-400 group-hover:text-gray-600 transition-colors uppercase">Ingreso Manual</span>
+                    </label>
+                  </div>
+                  
+                  {newDoc.usarCodigoManual ? (
+                    <input 
+                      required
+                      placeholder="Ej: GAM-PRO-001"
+                      className="w-full bg-gray-50 border-gray-100 rounded-xl py-3 px-4 focus:ring-1 focus:ring-eveca-primary outline-none font-bold text-eveca-primary uppercase"
+                      value={newDoc.codigoManual}
+                      onChange={e => setNewDoc({...newDoc, codigoManual: e.target.value})}
+                    />
+                  ) : (
+                    <div className="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">
+                      <p className={cn(
+                        "text-sm font-bold",
+                        codePreview ? "text-eveca-primary" : "text-gray-300 italic"
+                      )}>
+                        {codePreview ? `Código automático: ${codePreview}` : "Seleccione proceso y tipo para previsualizar"}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
