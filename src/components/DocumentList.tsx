@@ -81,6 +81,26 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Calculate last consecutive per process
+  const lastConsecutivesByProcess = React.useMemo(() => {
+    const map: Record<string, number> = {};
+    processes.forEach(p => map[p.id] = 0);
+    
+    documents.forEach(doc => {
+      if (doc.proceso_id && doc.codigo) {
+        const parts = doc.codigo.split('-');
+        const lastPart = parts[parts.length - 1];
+        const num = parseInt(lastPart, 10);
+        if (!isNaN(num)) {
+          if (!map[doc.proceso_id] || num > map[doc.proceso_id]) {
+            map[doc.proceso_id] = num;
+          }
+        }
+      }
+    });
+    return map;
+  }, [documents, processes]);
+
   const filteredDocs = documents.filter(doc => {
     const matchesSearch = (doc.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) || 
                          (doc.codigo?.toLowerCase() || '').includes(searchTerm.toLowerCase());
@@ -498,6 +518,16 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
             Nuevo Documento
           </button>
         )}
+      </div>
+
+      {/* Processes Summary Panel */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {processes.map(p => (
+          <div key={p.id} className="bg-dark-card border border-slate-800 rounded-2xl p-4 shadow-lg">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 truncate" title={p.nombre}>{p.abreviatura}</p>
+            <p className="text-2xl font-black text-white">{lastConsecutivesByProcess[p.id] || 0}</p>
+          </div>
+        ))}
       </div>
 
       {/* Filters Bar */}
