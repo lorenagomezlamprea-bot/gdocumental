@@ -10,7 +10,7 @@ import {
   X,
   Loader2
 } from 'lucide-react';
-import { cn, formatDate } from '../lib/utils';
+import { cn, formatDate, getStatusColor } from '../lib/utils';
 import { Documento, Proceso, TipoDocumento, UserProfile } from '../types';
 import { downloadWithWatermark } from '../lib/watermark';
 import { supabase } from '../lib/supabase';
@@ -79,12 +79,17 @@ export const ApprovedRepository = ({
       if (!path.startsWith('http')) {
         const { data, error } = await supabase.storage
           .from('documentos-sostenibilidad')
-          .createSignedUrl(path, 60);
+          .createSignedUrl(path, 300); // Aumentar tiempo a 5 minutos
         
         if (error) throw error;
         url = data.signedUrl;
       }
-      window.open(url, '_blank', 'noopener,noreferrer');
+
+      // Detectar si es excel o pdf
+      const isExcelOrPdf = /\.(xlsx|xls|csv|pdf)$/i.test(path);
+      const viewerUrl = isExcelOrPdf ? `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true` : url;
+
+      window.open(viewerUrl, '_blank', 'noopener,noreferrer');
     } catch (err: any) {
       setErrorMessage(`No se pudo generar la vista previa: ${err.message}.`);
     }
@@ -333,17 +338,17 @@ export const ApprovedRepository = ({
                      </div>
                   </div>
                   <button 
-                    onClick={() => handlePreview(selectedDoc.archivo_url)}
-                    className="w-full bg-accent-cyan text-white font-bold py-4 rounded-xl hover:bg-accent-cyan/90 transition-all flex items-center justify-center"
-                  >
-                    <Eye className="w-5 h-5 mr-2" />
-                    Ver Documento
-                  </button>
-                </div>
+                  onClick={() => handlePreview(selectedDoc.archivo_url)}
+                  className="w-full bg-accent-cyan text-white font-bold py-4 rounded-xl hover:bg-accent-cyan/90 transition-all flex items-center justify-center"
+                >
+                  <Eye className="w-5 h-5 mr-2" />
+                  Ver Documento
+                </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
-    );
+        </div>
+      )}
+    </div>
+  );
 };
