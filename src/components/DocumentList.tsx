@@ -309,7 +309,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
         .insert([{
           documento_id: selectedDoc.id,
           version: selectedDoc.version,
-          fecha: new Date().toISOString(),
+          created_at: new Date().toISOString(),
           subido_por: currentUserProfile?.id,
           motivo: (e.currentTarget as any).motivo.value,
           archivo_url: selectedDoc.archivo_url

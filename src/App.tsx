@@ -481,7 +481,8 @@ export default function App() {
       case 'admin':
         return <AdminModule processes={processes} types={types} onRefresh={fetchData} onViewChange={setCurrentView} currentUserProfile={profile} />;
       case 'access_control':
-        return profile?.email === 'jefaturasostenibilidad@gmail.com' ? <AccessControl /> : <Dashboard documents={documents} processes={processes} />;
+        const isAdmin = profile?.email === 'jefaturasostenibilidad@gmail.com' || session?.user?.email === 'jefaturasostenibilidad@gmail.com';
+        return isAdmin ? <AccessControl /> : <Dashboard documents={documents} processes={processes} />;
       case 'audit_log':
         return <AuditLog />;
       default:
