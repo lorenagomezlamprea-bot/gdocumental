@@ -27,6 +27,7 @@
     "pdf-lib": "^1.17.1",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "react-pdf": "^10.5.0",
     "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",

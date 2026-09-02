@@ -14,6 +14,9 @@ import { cn, formatDate, getStatusColor } from '../lib/utils';
 import { Documento, Proceso, TipoDocumento, UserProfile } from '../types';
 import { downloadWithWatermark } from '../lib/watermark';
 import { supabase } from '../lib/supabase';
+import { Document, Page, pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const ApprovedRepository = ({ 
   documents, 
@@ -34,6 +37,7 @@ export const ApprovedRepository = ({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [versionHistory, setVersionHistory] = useState<any[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [previewPdfUrl, setPreviewPdfUrl] = useState<string | null>(null);
 
   const fetchHistory = async (doc: Documento) => {
     setIsLoadingHistory(true);
@@ -85,11 +89,13 @@ export const ApprovedRepository = ({
         url = data.signedUrl;
       }
 
-      // Detectar si es excel o pdf
-      const isExcelOrPdf = /\.(xlsx|xls|csv|pdf)$/i.test(path);
-      const viewerUrl = isExcelOrPdf ? `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true` : url;
-
-      window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+      // Detectar si es pdf
+      if (/\.pdf$/i.test(path)) {
+        setPreviewPdfUrl(url);
+      } else {
+        // Para excel/otros, seguir usando Google Viewer
+        window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank', 'noopener,noreferrer');
+      }
     } catch (err: any) {
       setErrorMessage(`No se pudo generar la vista previa: ${err.message}.`);
     }
@@ -345,6 +351,24 @@ export const ApprovedRepository = ({
                   Ver Documento
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* PDF Preview Modal */}
+      {previewPdfUrl && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-4xl h-[90vh] shadow-2xl overflow-hidden flex flex-col">
+            <div className="p-4 bg-gray-100 flex justify-between items-center border-b">
+              <h3 className="text-sm font-bold">Visualizador de Documentos</h3>
+              <button onClick={() => setPreviewPdfUrl(null)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 flex justify-center">
+              <Document file={previewPdfUrl} onLoadError={console.error}>
+                <Page pageNumber={1} />
+              </Document>
             </div>
           </div>
         </div>
