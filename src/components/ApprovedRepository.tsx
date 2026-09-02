@@ -30,6 +30,31 @@ export const ApprovedRepository = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [isDownloading, setIsDownloading] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<Documento | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [versionHistory, setVersionHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  const fetchHistory = async (doc: Documento) => {
+    setIsLoadingHistory(true);
+    try {
+      const { data, error } = await supabase
+        .from('version_documentos')
+        .select(`
+          *,
+          perfiles:subido_por (nombre_completo)
+        `)
+        .eq('documento_id', doc.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setVersionHistory(data || []);
+    } catch (err: any) {
+      console.error('Error fetching history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const handleDownload = async (doc: Documento) => {
     setIsDownloading(doc.id);
@@ -151,8 +176,6 @@ export const ApprovedRepository = ({
           ))}
         </div>
 
-        {/* Results Grid */}
-        <div className="flex-1 space-y-10">
           <div className="relative">
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
             <input 
@@ -167,7 +190,7 @@ export const ApprovedRepository = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {approvedDocs.length > 0 ? (
               approvedDocs.map(doc => (
-                <div key={doc.id} className="bg-dark-card p-8 rounded-[2.5rem] border border-slate-800/50 shadow-2xl hover:border-accent-cyan/30 transition-all group flex flex-col relative overflow-hidden">
+                <div key={doc.id} onClick={() => { setSelectedDoc(doc); setIsViewModalOpen(true); fetchHistory(doc); }} className="bg-dark-card p-8 rounded-[2.5rem] border border-slate-800/50 shadow-2xl hover:border-accent-cyan/30 transition-all group flex flex-col relative overflow-hidden cursor-pointer">
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
                   <div className="flex justify-between items-start mb-6">
@@ -220,7 +243,107 @@ export const ApprovedRepository = ({
             )}
           </div>
         </div>
+
+        {/* View Details Modal */}
+        {isViewModalOpen && selectedDoc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-6 bg-accent-cyan text-white flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold">Detalles del Documento</h3>
+                  <p className="text-white/60 text-xs mt-1">{selectedDoc.codigo}</p>
+                </div>
+                <button onClick={() => setIsViewModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Nombre del Documento</p>
+                    <p className="text-lg font-bold text-gray-800">{selectedDoc.nombre}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Proceso</p>
+                      <p className="text-sm font-bold text-gray-700">{processes.find(p => p.id === selectedDoc.proceso_id)?.nombre}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tipo</p>
+                      <p className="text-sm font-bold text-gray-700">{types.find(t => t.id === selectedDoc.tipo_id)?.nombre}</p>
+                    </div>
+                  </div>
+  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Estado</p>
+                      <span className={cn("inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border", getStatusColor(selectedDoc.estado))}>
+                        {selectedDoc.estado}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Versión Actual</p>
+                      <p className="text-sm font-bold text-gray-700">v{selectedDoc.version}.0</p>
+                    </div>
+                  </div>
+  
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Historial de Versiones</p>
+                    <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2">
+                      {isLoadingHistory ? (
+                        <div className="text-center py-4 text-xs text-gray-400">Cargando versiones...</div>
+                      ) : versionHistory.length > 0 ? (
+                        versionHistory.map((v) => (
+                          <div key={v.id} className="flex items-start bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center shrink-0 mr-3 text-[10px] font-bold">
+                              v{v.numero_version}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-[10px] font-bold text-gray-800 uppercase">{formatDate(v.created_at)}</p>
+                              <p className="text-[10px] text-gray-600 italic">"{v.motivo || 'Sin motivo'}"</p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-xs text-gray-400">No hay historial disponible.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+  
+                <div className="space-y-6">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Responsable</p>
+                    <p className="text-sm font-bold text-gray-700">{selectedDoc.responsable}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Observaciones</p>
+                    <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-xl">{selectedDoc.observaciones || 'Sin observaciones'}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                     <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Creación</p>
+                      <p className="text-xs font-bold text-gray-700">{formatDate(selectedDoc.fecha_creacion)}</p>
+                     </div>
+                     <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Próxima Revisión</p>
+                      <p className="text-xs font-bold text-amber-600">{formatDate(selectedDoc.fecha_proxima_revision)}</p>
+                     </div>
+                  </div>
+                  <button 
+                    onClick={() => handlePreview(selectedDoc.archivo_url)}
+                    className="w-full bg-accent-cyan text-white font-bold py-4 rounded-xl hover:bg-accent-cyan/90 transition-all flex items-center justify-center"
+                  >
+                    <Eye className="w-5 h-5 mr-2" />
+                    Ver Documento
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
 };
