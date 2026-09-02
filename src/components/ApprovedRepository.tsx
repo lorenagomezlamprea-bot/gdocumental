@@ -14,9 +14,6 @@ import { cn, formatDate, getStatusColor } from '../lib/utils';
 import { Documento, Proceso, TipoDocumento, UserProfile } from '../types';
 import { downloadWithWatermark } from '../lib/watermark';
 import { supabase } from '../lib/supabase';
-import { Document, Page, pdfjs } from 'react-pdf';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const ApprovedRepository = ({ 
   documents, 
@@ -37,7 +34,6 @@ export const ApprovedRepository = ({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [versionHistory, setVersionHistory] = useState<any[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
-  const [previewPdfUrl, setPreviewPdfUrl] = useState<string | null>(null);
 
   const fetchHistory = async (doc: Documento) => {
     setIsLoadingHistory(true);
@@ -88,14 +84,8 @@ export const ApprovedRepository = ({
         if (error) throw error;
         url = data.signedUrl;
       }
-
-      // Detectar si es pdf
-      if (/\.pdf$/i.test(path)) {
-        setPreviewPdfUrl(url);
-      } else {
-        // Para excel/otros, seguir usando Google Viewer
-        window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank', 'noopener,noreferrer');
-      }
+      
+      window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank', 'noopener,noreferrer');
     } catch (err: any) {
       setErrorMessage(`No se pudo generar la vista previa: ${err.message}.`);
     }
@@ -223,13 +213,6 @@ export const ApprovedRepository = ({
                     </div>
                     <div className="flex space-x-3">
                       <button 
-                        onClick={() => handlePreview(doc.archivo_url)}
-                        className="p-3 text-slate-500 hover:text-white hover:bg-slate-800 rounded-xl transition-all" 
-                        title="Vista rápida"
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
-                      <button 
                         onClick={() => handleDownload(doc)}
                         disabled={isDownloading === doc.id}
                         className="p-3 text-white bg-accent-cyan hover:bg-white hover:text-dark-bg rounded-xl transition-all shadow-lg shadow-accent-cyan/10 disabled:opacity-30 group-hover:scale-110"
@@ -343,36 +326,12 @@ export const ApprovedRepository = ({
                       <p className="text-xs font-bold text-amber-600">{formatDate(selectedDoc.fecha_proxima_revision)}</p>
                      </div>
                   </div>
-                  <button 
-                  onClick={() => handlePreview(selectedDoc.archivo_url)}
-                  className="w-full bg-accent-cyan text-white font-bold py-4 rounded-xl hover:bg-accent-cyan/90 transition-all flex items-center justify-center"
-                >
-                  <Eye className="w-5 h-5 mr-2" />
-                  Ver Documento
-                </button>
+                  {/* Botón Ver Documento eliminado */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {/* PDF Preview Modal */}
-      {previewPdfUrl && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-4xl h-[90vh] shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-4 bg-gray-100 flex justify-between items-center border-b">
-              <h3 className="text-sm font-bold">Visualizador de Documentos</h3>
-              <button onClick={() => setPreviewPdfUrl(null)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-auto p-4 flex justify-center">
-              <Document file={previewPdfUrl} onLoadError={console.error}>
-                <Page pageNumber={1} />
-              </Document>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };
