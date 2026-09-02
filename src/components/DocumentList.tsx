@@ -81,25 +81,64 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Calculate last consecutive per process
-  const lastConsecutivesByProcess = React.useMemo(() => {
+  // Calculate last consecutive per process and type
+  const lastConsecutivesByProcessAndType = React.useMemo(() => {
     const map: Record<string, number> = {};
-    processes.forEach(p => map[p.id] = 0);
+    
+    // Initialize map keys
+    processes.forEach(p => {
+      types.forEach(t => {
+        map[`${p.id}-${t.id}`] = 0;
+      });
+    });
     
     documents.forEach(doc => {
-      if (doc.proceso_id && doc.codigo) {
+      if (doc.proceso_id && doc.tipo_id && doc.codigo) {
         const parts = doc.codigo.split('-');
         const lastPart = parts[parts.length - 1];
         const num = parseInt(lastPart, 10);
         if (!isNaN(num)) {
-          if (!map[doc.proceso_id] || num > map[doc.proceso_id]) {
-            map[doc.proceso_id] = num;
+          const key = `${doc.proceso_id}-${doc.tipo_id}`;
+          if (!map[key] || num > map[key]) {
+            map[key] = num;
           }
         }
       }
     });
     return map;
-  }, [documents, processes]);
+  }, [documents, processes, types]);
+
+  // Render processes and types matrix
+  const renderConsecutivesMatrix = () => {
+    return (
+      <div className="mb-6">
+        <h3 className="text-sm font-black text-white uppercase tracking-widest mb-4">Último Consecutivo por Proceso y Tipo</h3>
+        <div className="space-y-4">
+          {processes.map(p => {
+            const relevantTypes = types.filter(t => 
+              Object.keys(lastConsecutivesByProcessAndType).some(key => key.startsWith(`${p.id}-${t.id}`) && lastConsecutivesByProcessAndType[key] > 0)
+            );
+            
+            if (relevantTypes.length === 0) return null;
+
+            return (
+              <div key={p.id} className="bg-dark-card border border-slate-800 rounded-2xl p-4 shadow-lg">
+                <h4 className="text-xs font-black text-accent-purple uppercase tracking-widest mb-3">{p.nombre} ({p.abreviatura})</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  {relevantTypes.map(t => (
+                    <div key={`${p.id}-${t.id}`} className="bg-slate-800/50 rounded-xl p-3">
+                      <p className="text-[9px] font-black text-slate-500 uppercase truncate" title={t.nombre}>{t.abreviatura}</p>
+                      <p className="text-lg font-black text-white">{lastConsecutivesByProcessAndType[`${p.id}-${t.id}`] || 0}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const filteredDocs = documents.filter(doc => {
     const matchesSearch = (doc.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) || 
@@ -521,17 +560,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
       </div>
 
       {/* Processes Summary Panel */}
-      <div className="mb-6">
-        <h3 className="text-sm font-black text-white uppercase tracking-widest mb-4">Último Consecutivo por Proceso</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {processes.map(p => (
-            <div key={p.id} className="bg-dark-card border border-slate-800 rounded-2xl p-4 shadow-lg">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 truncate" title={p.nombre}>{p.abreviatura}</p>
-              <p className="text-2xl font-black text-white">{lastConsecutivesByProcess[p.id] || 0}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {renderConsecutivesMatrix()}
 
       {/* Filters Bar */}
       <div className="bg-dark-card p-6 rounded-[2rem] border border-slate-800/50 shadow-2xl flex flex-wrap gap-6 items-center">
