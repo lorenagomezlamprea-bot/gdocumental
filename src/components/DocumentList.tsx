@@ -705,7 +705,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                     <td className="px-10 py-8 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end space-x-2">
                         <button 
-                          onClick={() => { setSelectedDoc(doc); setIsViewModalOpen(true); }}
+                          onClick={() => { setSelectedDoc(doc); setIsViewModalOpen(true); fetchHistory(doc); }}
                           className="p-3 text-slate-500 hover:text-accent-cyan hover:bg-accent-cyan/10 rounded-xl transition-all" 
                           title="Ver detalles"
                         >
@@ -985,7 +985,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                     </span>
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Versión</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Versión Actual</p>
                     <p className="text-sm font-bold text-gray-700">v{selectedDoc.version}</p>
                   </div>
                 </div>
@@ -993,6 +993,29 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Responsable</p>
                   <p className="text-sm font-bold text-gray-700">{selectedDoc.responsable}</p>
+                </div>
+                
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Historial de Versiones</p>
+                  <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2">
+                    {isLoadingHistory ? (
+                      <div className="text-center py-4 text-xs text-gray-400">Cargando versiones...</div>
+                    ) : versionHistory.length > 0 ? (
+                      versionHistory.map((v) => (
+                        <div key={v.id} className="flex items-start bg-gray-50 p-3 rounded-xl border border-gray-100">
+                          <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center shrink-0 mr-3 text-[10px] font-bold">
+                            v{v.version}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-[10px] font-bold text-gray-800 uppercase">{formatDate(v.fecha)}</p>
+                            <p className="text-[10px] text-gray-600 italic">"{v.motivo || 'Sin motivo'}"</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-400">No hay historial disponible.</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
