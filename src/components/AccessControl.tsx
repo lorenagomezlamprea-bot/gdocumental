@@ -160,8 +160,11 @@ export const AccessControl = () => {
                       ) : (
                         <div className="flex items-center space-x-3">
                           <select 
-                            disabled={processingId === user.id}
-                            className="bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest focus:ring-1 focus:ring-accent-blue outline-none transition-all"
+                            disabled={processingId === user.id || user.email === 'jefaturasostenibilidad@gmail.com'}
+                            className={cn(
+                              "bg-slate-800 border border-slate-700 rounded-xl py-2 px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest focus:ring-1 focus:ring-accent-blue outline-none transition-all",
+                              user.email === 'jefaturasostenibilidad@gmail.com' && "opacity-50 cursor-not-allowed"
+                            )}
                             value={user.rol}
                             onChange={(e) => handleAction(user.id, 'aprobado', e.target.value as UserRole)}
                           >
