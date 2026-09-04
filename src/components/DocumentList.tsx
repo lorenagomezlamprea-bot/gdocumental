@@ -208,17 +208,43 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
   const fetchHistory = async (doc: Documento) => {
     setIsLoadingHistory(true);
     try {
-      const { data, error } = await supabase
+      // 1. Get history from DB
+      const { data: dbHistory, error } = await supabase
         .from('version_documentos')
         .select(`
-          *,
+          id,
+          documento_id,
+          version,
+          created_at,
+          subido_por,
+          motivo,
+          archivo_url,
           perfiles:subido_por (nombre_completo)
         `)
         .eq('documento_id', doc.id)
-        .order('fecha', { ascending: false });
+        .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setVersionHistory(data || []);
+      if (error) console.error('Error fetching history from DB:', error);
+
+      // 2. Get history from documents prop (same codigo)
+      const otherVersions = documents
+        .filter(d => d.codigo === doc.codigo && d.id !== doc.id)
+        .map(d => ({
+          id: d.id,
+          documento_id: d.id,
+          version: d.version,
+          fecha: d.fecha_ultima_revision,
+          subido_por: d.aprobado_por, // Using approved_by as subido_por
+          motivo: d.observaciones,
+          archivo_url: d.archivo_url,
+          created_at: d.fecha_ultima_revision
+        }));
+
+      // Combine and deduplicate if necessary, sort by date
+      const combinedHistory = [...(dbHistory || []).map(v => ({...v, fecha: v.created_at})), ...otherVersions]
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setVersionHistory(combinedHistory);
     } catch (err: any) {
       console.error('Error fetching history:', err);
     } finally {

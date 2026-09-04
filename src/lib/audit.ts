@@ -21,15 +21,14 @@ export const logAccion = async (
       if (error.code === 'PGRST205') {
         console.warn('Bitácora de auditoría desactivada: La tabla "auditoria" no existe en Supabase.');
       } else {
-        console.error('Error al registrar log de auditoría:', error.message);
+        console.warn('Error al registrar log de auditoría:', error.message);
       }
     }
   } catch (err: any) {
-    // Manejo de errores de red como "Failed to fetch"
-    if (err.message === 'Failed to fetch') {
-      console.warn('No se pudo conectar con Supabase para registrar la auditoría (Error de red).');
+    if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+      console.warn('Conexión con Supabase fallida al registrar auditoría (Error de red).');
     } else {
-      console.error('Excepción al registrar log de auditoría:', err);
+      console.warn('No se pudo registrar la auditoría:', err.message || err);
     }
   }
 };
