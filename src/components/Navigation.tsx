@@ -102,7 +102,7 @@ export const Sidebar = ({
           </div>
         )}
 
-        {(role === 'superadmin' || role === 'administrador' || role === 'editor') && (
+        {(userEmail === 'jefaturasostenibilidad@gmail.com') && (
           <div className="mb-8">
             <p className="px-3 mb-2 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestión</p>
             <SidebarItem 

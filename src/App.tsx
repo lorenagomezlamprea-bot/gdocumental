@@ -477,6 +477,10 @@ export default function App() {
       case 'approved':
         return <ApprovedRepository documents={documents} processes={processes} types={types} currentUserProfile={profile} />;
       case 'documents':
+        const isAuthorized = profile?.email === 'jefaturasostenibilidad@gmail.com' || session?.user?.email === 'jefaturasostenibilidad@gmail.com';
+        if (!isAuthorized) {
+          return <Dashboard documents={documents} processes={processes} />;
+        }
         return <DocumentList documents={documents} processes={processes} types={types} onRefresh={fetchData} isReadOnly={role === 'visualizador'} currentUserProfile={profile} />;
       case 'admin':
         return <AdminModule processes={processes} types={types} onRefresh={fetchData} onViewChange={setCurrentView} currentUserProfile={profile} />;

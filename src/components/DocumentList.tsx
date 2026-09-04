@@ -227,6 +227,8 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
       if (error) console.error('Error fetching history from DB:', error);
 
       // 2. Get history from documents prop (same codigo)
+      console.log('Fetching history for doc:', doc.codigo, doc.id);
+      console.log('All documents:', documents.map(d => ({codigo: d.codigo, id: d.id})));
       const otherVersions = documents
         .filter(d => d.codigo === doc.codigo && d.id !== doc.id)
         .map(d => ({
@@ -239,6 +241,7 @@ export const DocumentList = ({ documents, processes, types, isReadOnly, onRefres
           archivo_url: d.archivo_url,
           created_at: d.fecha_ultima_revision
         }));
+      console.log('Found other versions:', otherVersions);
 
       // Combine and deduplicate if necessary, sort by date
       const combinedHistory = [...(dbHistory || []).map(v => ({...v, fecha: v.created_at})), ...otherVersions]
